@@ -3,7 +3,7 @@ DB_CONFIG = {
     "host" : "buz25lpzf5ir4dq6onwo-mysql.services.clever-cloud.com",
     "user" : "uarh7pbh6b3dlpns",
     "password" : "eKULiSPEz2YvkeLGh8Ry",
-    "name" : "buz25lpzf5ir4dq6onwo",
+    "database" : "buz25lpzf5ir4dq6onwo",
     "port" : 3306
 }
 
