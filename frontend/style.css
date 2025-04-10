@@ -1,0 +1,46 @@
+/* Fast copypaste code for future use */
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+}
+
+h1, h2 {
+    color: #1DA1F2;
+}
+
+input, textarea {
+    width: 80%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 15px;
+    background: #1DA1F2;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+button:hover {
+    background: #0d8bf0;
+}
+
+#tweet-list {
+    margin-top: 20px;
+    text-align: left;
+    display: inline-block;
+    width: 60%;
+}
+
+.tweet {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+}
