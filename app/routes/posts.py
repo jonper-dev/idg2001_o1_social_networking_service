@@ -30,3 +30,11 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 @router.post("/")
 def create_post(title: str, content: str, user_id: int, db: Session = Depends(get_db)):
     return crud.create_post(db, title, content, user_id)
+
+### Updating a post.
+@router.put("/{post_id}")
+def update_post(post_id: int, title: str, content: str, db: Session = Depends(get_db)):
+    post = crud.update_post(db, post_id, title, content)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found.")
+    return post

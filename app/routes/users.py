@@ -30,3 +30,11 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 @router.post("/")
 def add_user(name: str, email: str, db: Session = Depends(get_db)):
     return crud.create_user(db, name, email)
+
+### Updating a user.
+@router.put("/{user_id}")
+def update_user(user_id: int, name: str, email: str, db: Session = Depends(get_db)):
+    user = crud.update_user(db, user_id, name, email)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+    return user
