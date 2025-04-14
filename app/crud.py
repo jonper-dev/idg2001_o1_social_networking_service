@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import User, Tweet, Hashtag
+from models import User, Post, Hashtag
 from sqlalchemy import or_
 
 # --- USERS ---
@@ -25,59 +25,59 @@ def follow_user(db: Session, follower_id: int, followed_id: int):
         db.commit()
     return follower
 
-# --- POSTS/TWEETS ---
+# --- POSTS ---
 
-def create_tweet(db: Session, user_id: int, content: str, hashtags: list[str] = [], reply_to_id: int = None):
-    tweet = Tweet(content=content, user_id=user_id, reply_to_id=reply_to_id)
+def create_post(db: Session, user_id: int, content: str, hashtags: list[str] = [], reply_to_id: int = None):
+    post = Post(content=content, user_id=user_id, reply_to_id=reply_to_id)
 
     # Process hashtags
     for tag in hashtags:
         tag = tag.lower()
         existing = db.query(Hashtag).filter(Hashtag.name == tag).first()
         if existing:
-            tweet.hashtags.append(existing)
+            post.hashtags.append(existing)
         else:
             new_tag = Hashtag(name=tag)
             db.add(new_tag)
-            tweet.hashtags.append(new_tag)
+            post.hashtags.append(new_tag)
 
-    db.add(tweet)
+    db.add(post)
     db.commit()
-    db.refresh(tweet)
-    return tweet
+    db.refresh(post)
+    return post
 
-def get_tweets(db: Session):
-    return db.query(Tweet).all()
+def get_posts(db: Session):
+    return db.query(Post).all()
 
-def get_tweet(db: Session, tweet_id: int):
-    return db.query(Tweet).filter(Tweet.id == tweet_id).first()
+def get_post(db: Session, post_id: int):
+    return db.query(Post).filter(Post.id == post_id).first()
 
-def edit_tweet(db: Session, tweet_id: int, new_content: str):
-    tweet = db.query(Tweet).get(tweet_id)
-    tweet.content = new_content
-    tweet.edited = True
+def edit_post(db: Session, post_id: int, new_content: str):
+    post = db.query(Post).get(post_id)
+    post.content = new_content
+    post.edited = True
     db.commit()
-    db.refresh(tweet)
-    return tweet
+    db.refresh(post)
+    return post
 
-def like_tweet(db: Session, user_id: int, tweet_id: int):
-    tweet = db.query(Tweet).get(tweet_id)
+def like_post(db: Session, user_id: int, post_id: int):
+    post = db.query(Post).get(post_id)
     user = db.query(User).get(user_id)
-    if user not in tweet.likes:
-        tweet.likes.append(user)
+    if user not in post.likes:
+        post.likes.append(user)
         db.commit()
-    return tweet
+    return post
 
-def reply_to_tweet(db: Session, user_id: int, content: str, parent_id: int):
-    return create_tweet(db, user_id=user_id, content=content, reply_to_id=parent_id)
+def reply_to_post(db: Session, user_id: int, content: str, parent_id: int):
+    return create_post(db, user_id=user_id, content=content, reply_to_id=parent_id)
 
 # --- SEARCH ---
 
-def search_tweets(db: Session, query: str):
-    return db.query(Tweet).filter(
+def search_posts(db: Session, query: str):
+    return db.query(Post).filter(
         or_(
-            Tweet.content.ilike(f"%{query}%"),
-            Tweet.hashtags.any(Hashtag.name.ilike(f"%{query}%"))
+            Post.content.ilike(f"%{query}%"),
+            Post.hashtags.any(Hashtag.name.ilike(f"%{query}%"))
         )
     ).all()
 
