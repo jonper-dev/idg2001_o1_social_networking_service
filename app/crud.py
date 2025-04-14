@@ -72,7 +72,6 @@ def reply_to_post(db: Session, user_id: int, content: str, parent_id: int):
     return create_post(db, user_id=user_id, content=content, reply_to_id=parent_id)
 
 # --- SEARCH ---
-
 def search_posts(db: Session, query: str):
     return db.query(Post).filter(
         or_(
@@ -83,3 +82,25 @@ def search_posts(db: Session, query: str):
 
 def search_hashtags(db: Session, tag: str):
     return db.query(Hashtag).filter(Hashtag.name.ilike(f"%{tag}%")).all()
+
+### Update user
+def update_user(db: Session, user_id: int, name: str, email: str):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        return None
+    user.name = name
+    user.email = email
+    db.commit()
+    db.refresh(user)
+    return user
+
+### Update post
+def update_post(db: Session, post_id: int, title: str, content: str):
+    post = db.query(Post).filter(Post.id == post_id).first()
+    if not post:
+        return None
+    post.title = title
+    post.content = content
+    db.commit()
+    db.refresh(post)
+    return post
