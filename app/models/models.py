@@ -1,3 +1,5 @@
+from typing import Optional
+from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, Table, Boolean, DateTime, func
 from sqlalchemy.orm import relationship, declarative_base
 
@@ -60,3 +62,7 @@ class Hashtag(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), unique=True, index=True)
     posts = relationship("Post", secondary=post_hashtags, back_populates="hashtags")
+
+class PostPatch(BaseModel):
+    title: Optional[str] = None
+    content: Optional[str] = None
