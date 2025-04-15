@@ -1,3 +1,5 @@
+from typing import Optional
+from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, Table, Boolean, DateTime, func
 from sqlalchemy.orm import relationship, declarative_base
 
@@ -16,14 +18,14 @@ likes = Table(
     'likes',
     Base.metadata,
     Column('user_id', Integer, ForeignKey('users.id')),
-    Column('tweet_id', Integer, ForeignKey('tweets.id'))
+    Column('post_id', Integer, ForeignKey('posts.id'))
 )
 
 # Many-to-many for hashtags
-tweet_hashtags = Table(
-    'tweet_hashtags',
+post_hashtags = Table(
+    'post_hashtags',
     Base.metadata,
-    Column('tweet_id', Integer, ForeignKey('tweets.id')),
+    Column('post_id', Integer, ForeignKey('posts.id')),
     Column('hashtag_id', Integer, ForeignKey('hashtags.id'))
 )
 
@@ -32,7 +34,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(50), unique=True, index=True)
     email = Column(String(100), unique=True)
-    tweets = relationship("Tweet", back_populates="author")
+    posts = relationship("Post", back_populates="author")
     following = relationship(
         "User",
         secondary=followers,
@@ -41,22 +43,26 @@ class User(Base):
         backref="followers"
     )
 
-class Tweet(Base):
-    __tablename__ = 'tweets'
+class Post(Base):
+    __tablename__ = 'posts'
     id = Column(Integer, primary_key=True, index=True)
     content = Column(Text)
     created_at = Column(DateTime, default=func.now())
     edited = Column(Boolean, default=False)
     user_id = Column(Integer, ForeignKey('users.id'))
-    reply_to_id = Column(Integer, ForeignKey('tweets.id'), nullable=True)
+    reply_to_id = Column(Integer, ForeignKey('posts.id'), nullable=True)
 
-    author = relationship("User", back_populates="tweets")
-    likes = relationship("User", secondary=likes, backref="liked_tweets")
-    hashtags = relationship("Hashtag", secondary=tweet_hashtags, back_populates="tweets")
-    replies = relationship("Tweet", remote_side=[id], backref="parent")
+    author = relationship("User", back_populates="posts")
+    likes = relationship("User", secondary=likes, backref="liked_posts")
+    hashtags = relationship("Hashtag", secondary=post_hashtags, back_populates="posts")
+    replies = relationship("Post", remote_side=[id], backref="parent")
 
 class Hashtag(Base):
     __tablename__ = 'hashtags'
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), unique=True, index=True)
-    tweets = relationship("Tweet", secondary=tweet_hashtags, back_populates="hashtags")
+    posts = relationship("Post", secondary=post_hashtags, back_populates="hashtags")
+
+class PostPatch(BaseModel):
+    title: Optional[str] = None
+    content: Optional[str] = None

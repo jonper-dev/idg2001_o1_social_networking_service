@@ -104,3 +104,13 @@ def update_post(db: Session, post_id: int, title: str, content: str):
     db.commit()
     db.refresh(post)
     return post
+
+def partial_update_post(db: Session, post_id: int, updates: dict):
+    post = db.query(Post).filter(Post.id == post_id).first()
+    if not post:
+        return None
+    for key, value in updates.items():
+        setattr(post, key, value)
+    db.commit()
+    db.refresh(post)
+    return post
