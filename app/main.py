@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from app.db import get_db
-from models.models import User
+from db import get_db
 from routes import users, posts ### Importing our route modules
 
 app = FastAPI()
