@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import User, Post, Hashtag
+from app.models.models import User, Post, Hashtag
 from sqlalchemy import or_
 
 # --- USERS ---
