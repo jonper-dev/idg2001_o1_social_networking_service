@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship, declarative_base
 
 Base = declarative_base()
 
-# Many-to-many relationship for followers
+## Many-to-many relationship for followers
 followers = Table(
     'followers',
     Base.metadata,
@@ -13,7 +13,7 @@ followers = Table(
     Column('followed_id', Integer, ForeignKey('users.id'))
 )
 
-# Many-to-many relationship for likes
+## Many-to-many relationship for likes
 likes = Table(
     'likes',
     Base.metadata,
@@ -21,7 +21,7 @@ likes = Table(
     Column('post_id', Integer, ForeignKey('posts.id'))
 )
 
-# Many-to-many for hashtags
+## Many-to-many for hashtags
 post_hashtags = Table(
     'post_hashtags',
     Base.metadata,
@@ -64,6 +64,36 @@ class Hashtag(Base):
     name = Column(String(100), unique=True, index=True)
     posts = relationship("Post", secondary=post_hashtags, back_populates="hashtags")
 
+#################################################################
+### -- Pydantic models for request and response validation -- ###
+#################################################################
+## These models are used to validate the data sent to and from the API.
+
+#############
+### Users ###
+#############
+## Used for creating a new user
+class UserCreate(BaseModel):
+    name: str
+    email: str
+    password: str
+
+## Used for updating a user (full update)
+class UserUpdate(BaseModel):
+    name: str
+    email: str
+    password: str
+
+## Used for partial update (PATCH)
+class UserPatch(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    password: Optional[str] = None
+
+#############
+### Posts ###
+#############
+## Used for a partial update (PATCH)
 class PostPatch(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None
