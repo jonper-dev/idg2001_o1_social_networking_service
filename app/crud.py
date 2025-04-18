@@ -10,8 +10,9 @@ def get_users(db: Session):
 def get_user(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
 
-def create_user(db: Session, name: str, email: str):
-    user = User(name=name, email=email)
+def create_user(db: Session, name: str, email: str, password: str):
+    # Hash the password (this is a placeholder, use a proper hashing function in production)
+    user = User(name=name, email=email, password=password)
     db.add(user)
     db.commit()
     db.refresh(user)
