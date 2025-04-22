@@ -2,7 +2,7 @@
 ////////////Fast copypaste code for future use
 
 
-const API_BASE_URL = "http://127.0.0.1:8000/api";  // Change this if deployed
+const API_BASE_URL = "https://idg2001-o1-social-networking-service.onrender.com/";  // Change this if deployed
 
 // Signup Function
 function signup() {
