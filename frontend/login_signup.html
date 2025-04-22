@@ -1,43 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cheeper</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
-</head>
-<body>
+  </head>
+  <body>
     <header>
       <nav>
-        <div class="logo">Cheeper</div>
+        <div class="logo">
+          <img
+            class="logo__image"
+            src="assets/cheeper-logo-white.svg"
+            alt="The Cheeper logo visualizing a bird"
+          />
+          <h1 class="logo__text">Cheeper</h1>
+        </div>
         <button class="menu-toggle" id="menu-toggle">&#9776;</button>
         <ul class="nav-links" id="nav-links">
           <li><a href="login_signup.html">Login</a></li>
           <li><a href="post.html">Posts</a></li>
         </ul>
       </nav>
-      </header>
+    </header>
     <main>
-        <!-- User Login -->
-         <div id="login">
-            <h2>Log In</h2>
-            <input type="email" id="login-email" placeholder="Email">
-            <input type="password" id="login-password" placeholder="Password">
-            <button onclick="login()">Login</button>
-            <p id="login-message"></p>
-          </div>
+      <!-- User Login -->
+      <div id="login">
+        <h2>Log In</h2>
+        <input type="email" id="login-email" placeholder="Email" />
+        <input type="password" id="login-password" placeholder="Password" />
+        <button onclick="login()">Login</button>
+        <p id="login-message"></p>
+      </div>
 
-        <!-- User Signup -->
-        <div id="signup">
-          <h2>Sign Up</h2>
-          <input type="text" id="username" placeholder="Username">
-          <input type="email" id="email" placeholder="Email">
-          <input type="password" id="password" placeholder="Password">
-          <button onclick="signup()">Sign Up</button>
-          <p id="signup-message" class="success"></p>
+      <!-- User Signup -->
+      <div id="signup">
+        <h2>Sign Up</h2>
+        <input type="text" id="username" placeholder="Username" />
+        <input type="email" id="email" placeholder="Email" />
+        <input type="password" id="password" placeholder="Password" />
+        <button onclick="signup()">Sign Up</button>
+        <p id="signup-message" class="success"></p>
       </div>
     </main>
     <footer></footer>
-</body>
+  </body>
 </html>

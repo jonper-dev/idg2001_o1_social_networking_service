@@ -61,9 +61,21 @@ header {
     flex-wrap: wrap;
 
     .logo {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: $white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 20%;
+
+      &__image {
+        display: block;
+        height: 50px;
+      }
+
+      &__text {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: $white;
+      }
     }
 
     .menu-toggle {
@@ -145,6 +157,10 @@ main {
     max-width: 600px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
     h2 {
       margin-bottom: 20px;

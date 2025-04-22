@@ -42,6 +42,16 @@ header nav {
   flex-wrap: wrap;
 }
 header nav .logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
+}
+header nav .logo__image {
+  display: block;
+  height: 50px;
+}
+header nav .logo__text {
   font-size: 1.8rem;
   font-weight: bold;
   color: #fff;
@@ -116,6 +126,10 @@ main #posts {
   max-width: 600px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 main #login h2,
 main #signup h2,
