@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheeper</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <nav>
+          <div class="logo">Cheeper</div>
+          <button class="menu-toggle" id="menu-toggle">&#9776;</button>
+          <ul class="nav-links" id="nav-links">
+            <li><a href="login_signup.html">Login</a></li>
+            <li><a href="post.html">Posts</a></li>
+          </ul>
+        </nav>
+      </header>
+    <main>
+        <!-- Post -->
+    <div id="post-box">
+        <h2>Post a Cheep</h2>
+        <textarea id="post-content" placeholder="What's happening?"></textarea>
+        <button onclick="postPost()">Post</button>
+        <p id="post-message" class="error"></p>
+    </div>
+
+    <!-- Post Feed -->
+    <div id="posts">
+        <h2>Latest Posts</h2>
+        <div id="post-list"></div>
+    </div>
+    </main>
+    <footer>
+        <button onclick="logout()">Log Out</button>
+        <p id="logout-message"></p>
+        <p>&copy; 2025 Cheeper. All rights reserved.</p>
+    </footer>
+</body>
+</html>

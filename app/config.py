@@ -1,13 +1,17 @@
-# Config for project
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 DB_CONFIG = {
-    "host" : "buz25lpzf5ir4dq6onwo-mysql.services.clever-cloud.com",
-    "user" : "uarh7pbh6b3dlpns",
-    "password" : "eKULiSPEz2YvkeLGh8Ry",
-    "database" : "buz25lpzf5ir4dq6onwo",
-    "port" : 3306
+    "host": os.getenv("DB_HOST"),  # No fallback value — must be set in environment
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "database": os.getenv("DB_NAME"),
+    "port": int(os.getenv("DB_PORT", 3306)),  # Default to 3306 if not set
 }
 
-DATABASE_URL = "mysql://uarh7pbh6b3dlpns:eKULiSPEz2YvkeLGh8Ry@buz25lpzf5ir4dq6onwo-mysql.services.clever-cloud.com:3306/buz25lpzf5ir4dq6onwo"
-
-### Sample of configuration setup below. Implement above as needed.
-# DATABASE_URL = "mysql+pymysql://username:password@localhost/your_database"
+DATABASE_URL = (
+    f"mysql+pymysql://{DB_CONFIG['user']}:{DB_CONFIG['password']}"
+    f"@{DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['database']}"
+)
