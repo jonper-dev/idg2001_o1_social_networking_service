@@ -10,8 +10,9 @@ def get_users(db: Session):
 def get_user(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
 
-def create_user(db: Session, name: str, email: str):
-    user = User(name=name, email=email)
+def create_user(db: Session, name: str, email: str, password: str):
+    # Hash the password (this is a placeholder, use a proper hashing function in production)
+    user = User(name=name, email=email, password=password)
     db.add(user)
     db.commit()
     db.refresh(user)
@@ -83,18 +84,30 @@ def search_posts(db: Session, query: str):
 def search_hashtags(db: Session, tag: str):
     return db.query(Hashtag).filter(Hashtag.name.ilike(f"%{tag}%")).all()
 
-### Update user
-def update_user(db: Session, user_id: int, name: str, email: str):
+## Update user
+def update_user(db: Session, user_id: int, name: str, email: str, password: str):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         return None
     user.name = name
     user.email = email
+    user.password = password  # You could also hash it here
     db.commit()
     db.refresh(user)
     return user
 
-### Update post
+## Partial update user
+def partial_update_user(db: Session, user_id: int, updates: dict):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        return None
+    for key, value in updates.items():
+        setattr(user, key, value)
+    db.commit()
+    db.refresh(user)
+    return user
+
+## Update post
 def update_post(db: Session, post_id: int, title: str, content: str):
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
@@ -105,6 +118,7 @@ def update_post(db: Session, post_id: int, title: str, content: str):
     db.refresh(post)
     return post
 
+## Partial update post
 def partial_update_post(db: Session, post_id: int, updates: dict):
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
