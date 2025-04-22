@@ -105,6 +105,7 @@ main header {
   top: 0;
   z-index: 10;
 }
+main #login,
 main #signup,
 main #post-box,
 main #posts {
@@ -116,16 +117,19 @@ main #posts {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   text-align: center;
 }
+main #login h2,
 main #signup h2,
 main #post-box h2,
 main #posts h2 {
   margin-bottom: 20px;
 }
+main #login button,
 main #signup button,
 main #post-box button,
 main #posts button {
   margin-top: 10px;
 }
+main #login p,
 main #signup p,
 main #post-box p,
 main #posts p {
