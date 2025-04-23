@@ -2,7 +2,11 @@ from sqlalchemy.orm import Session
 from app.models.models import User, Post, Hashtag
 from sqlalchemy import or_
 
-# --- USERS ---
+
+###################
+### -- USERS -- ###
+###################
+## Login
 
 def get_users(db: Session):
     return db.query(User).all()
@@ -10,6 +14,18 @@ def get_users(db: Session):
 def get_user(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
 
+def get_user_by_email(db: Session, email: str):
+    return db.query(User).filter(User.email == email).first()
+
+def authenticate_user(db: Session, email: str, password: str):
+    user = get_user_by_email(db, email)
+    if not user:
+        return None
+    if user.password != password:
+        return None
+    return user
+
+## Signup
 def create_user(db: Session, name: str, email: str, password: str):
     # Hash the password (this is a placeholder, use a proper hashing function in production)
     user = User(name=name, email=email, password=password)
@@ -26,7 +42,10 @@ def follow_user(db: Session, follower_id: int, followed_id: int):
         db.commit()
     return follower
 
-# --- POSTS ---
+###################
+### -- POSTS -- ###
+###################
+## Create post
 def create_post(db: Session, post_data):
     from app.models.models import Post, Hashtag  # Avoid circular imports
 
@@ -36,7 +55,7 @@ def create_post(db: Session, post_data):
         reply_to_id=post_data.reply_to_id
     )
 
-    # Handle hashtags (optional)
+## Handle hashtags
     for tag in post_data.hashtags:
         tag = tag.lower().strip()
         existing = db.query(Hashtag).filter(Hashtag.name == tag).first()
@@ -52,12 +71,15 @@ def create_post(db: Session, post_data):
     db.refresh(post)
     return post
 
+## Get all posts
 def get_posts(db: Session):
     return db.query(Post).all()
 
+## Get post by ID
 def get_post(db: Session, post_id: int):
     return db.query(Post).filter(Post.id == post_id).first()
 
+## Edit post by ID
 def edit_post(db: Session, post_id: int, new_content: str):
     post = db.query(Post).get(post_id)
     post.content = new_content
@@ -66,6 +88,7 @@ def edit_post(db: Session, post_id: int, new_content: str):
     db.refresh(post)
     return post
 
+## Like post
 def like_post(db: Session, user_id: int, post_id: int):
     post = db.query(Post).get(post_id)
     user = db.query(User).get(user_id)
@@ -74,10 +97,14 @@ def like_post(db: Session, user_id: int, post_id: int):
         db.commit()
     return post
 
+## Reply to post
 def reply_to_post(db: Session, user_id: int, content: str, parent_id: int):
     return create_post(db, user_id=user_id, content=content, reply_to_id=parent_id)
 
-# --- SEARCH ---
+####################
+### -- SEARCH -- ###
+####################
+## SignupSearch posts
 def search_posts(db: Session, query: str):
     return db.query(Post).filter(
         or_(
@@ -86,6 +113,7 @@ def search_posts(db: Session, query: str):
         )
     ).all()
 
+## Search hashtags
 def search_hashtags(db: Session, tag: str):
     return db.query(Hashtag).filter(Hashtag.name.ilike(f"%{tag}%")).all()
 
