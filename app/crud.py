@@ -1,13 +1,23 @@
 from sqlalchemy.orm import Session
 from app.models.models import User, Post, Hashtag
 from sqlalchemy import or_
+import bcrypt
 
+######################
+### -- PASSWORD -- ###
+######################
+## Password hashing
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+## Password verification
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 ###################
 ### -- USERS -- ###
 ###################
 ## Login
-
 def get_users(db: Session):
     return db.query(User).all()
 
@@ -17,18 +27,16 @@ def get_user(db: Session, user_id: int):
 def get_user_by_email(db: Session, email: str):
     return db.query(User).filter(User.email == email).first()
 
-def authenticate_user(db: Session, email: str, password: str):
+def verify_user_credentials(db: Session, email: str, password: str):
     user = get_user_by_email(db, email)
-    if not user:
-        return None
-    if user.password != password:
-        return None
-    return user
+    if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+        return user
+    return None
 
 ## Signup
-def create_user(db: Session, name: str, email: str, password: str):
-    # Hash the password (this is a placeholder, use a proper hashing function in production)
-    user = User(name=name, email=email, password=password)
+def create_user(db: Session, username: str, email: str, password: str):
+    hashed_pw = hash_password(password)
+    user = User(username=username, email=email, password=password)
     db.add(user)
     db.commit()
     db.refresh(user)

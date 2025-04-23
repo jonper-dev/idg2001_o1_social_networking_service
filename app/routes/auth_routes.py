@@ -1,7 +1,6 @@
 #####################################
 ### -- Authentication handling -- ###
 #####################################
-## User creation, user registration, ... ?
 
 from fastapi import APIRouter, Depends, HTTPException, Form
 from sqlalchemy.orm import Session
@@ -10,9 +9,9 @@ from app import crud
 
 router = APIRouter()
 
-########################
-### Signup endpoint  ###
-########################
+###############
+### Signup  ###
+###############
 @router.post("/signup/")
 def signup(
      username: str = Form(...), 
@@ -28,9 +27,17 @@ def signup(
     new_user = crud.create_user(db, name, email, password)
     return {"message": "Signup successful", "user": new_user}
 
-@router.get("/login/")
-def login(email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
-    user = crud.get_user(db, username, password)
+###############
+### Login  ###
+###############
+
+@router.post("/login/")
+def login(
+    email: str = Form(...), 
+    password: str = Form(...), 
+    db: Session = Depends(get_db)
+):
+    user = crud.verify_user_credentials(db, email, password)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    return {"message": "Login successful", "user": user}
+    return {"message": "Login successful"}
