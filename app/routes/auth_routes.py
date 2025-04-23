@@ -24,7 +24,7 @@ def signup(
     if existing_user:
         raise HTTPException(status_code=400, detail="User already exists")
 
-    new_user = crud.create_user(db, name, email, password)
+    new_user = crud.create_user(db, username, email, password)
     return {"message": "Signup successful", "user": new_user}
 
 ###############
