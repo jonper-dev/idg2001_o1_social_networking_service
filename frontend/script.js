@@ -1,6 +1,10 @@
-const API_BASE_URL = "http://127.0.0.1:8000/api"; // change to Render URL if deployed
 
-// 🌙 DARK MODE toggle with localStorage
+////////////Fast copypaste code for future use
+
+
+const API_BASE_URL = "https://idg2001-o1-social-networking-service.onrender.com";
+
+// DARK MODE toggle with localStorage
 const darkToggle = document.getElementById("dark-toggle");
 if (localStorage.getItem("dark") === "true") {
   document.body.classList.add("dark");
@@ -15,7 +19,7 @@ if (darkToggle) {
   });
 }
 
-// 📱 Responsive nav menu toggle
+// Responsive nav menu toggle
 const menuToggle = document.getElementById("menu-toggle");
 const navLinks = document.getElementById("nav-links");
 if (menuToggle && navLinks) {
@@ -24,7 +28,7 @@ if (menuToggle && navLinks) {
   });
 }
 
-// 👤 Sign up
+// Sign up
 function signup() {
   const username = document.getElementById("username").value;
   const email = document.getElementById("email").value;
@@ -44,7 +48,7 @@ function signup() {
     .catch(err => console.error("Signup error:", err));
 }
 
-// 🔑 Login
+// Login
 function login() {
     const email = document.getElementById("login-email").value;
     const password = document.getElementById("login-password").value;
@@ -73,7 +77,7 @@ function login() {
       });
   }
 
-// 🔑 Logout
+// Logout
 function logout() {
     localStorage.clear();
     alert("You have been logged out.");
@@ -81,7 +85,7 @@ function logout() {
   }
   
 
-// 🐥 Post a Cheep
+// Post a Cheep
 function postPost() {
     const content = document.getElementById("post-content").value;
     const user_id = localStorage.getItem("user_id");
@@ -107,7 +111,7 @@ function postPost() {
     .catch(err => console.error("Post error:", err));
 }
 
-// 🧾 Load post feed
+// Load post feed
 function loadPosts() {
   fetch(`${API_BASE_URL}/posts/`)
     .then(res => res.json())
@@ -128,5 +132,5 @@ function loadPosts() {
     .catch(err => console.error("Load posts error:", err));
 }
 
-// ▶️ Load posts on startup
+// Load posts on startup
 window.onload = loadPosts;
