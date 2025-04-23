@@ -78,7 +78,7 @@ class UserCreate(BaseModel):
     email: str
     password: str
 
-## Used for updating a user (full update)
+## Used for updating a user (full update, PUT)
 class UserUpdate(BaseModel):
     name: str
     email: str
@@ -100,7 +100,10 @@ class PostCreate(BaseModel):
     reply_to_id: Optional[int] = None
     hashtags: Optional[list[str]] = []
 
+## Used for updating a post (full update, PUT)
+class PostUpdate(BaseModel):
+    content: str
+
 ## Used for a partial update (PATCH)
 class PostPatch(BaseModel):
-    title: Optional[str] = None
     content: Optional[str] = None
