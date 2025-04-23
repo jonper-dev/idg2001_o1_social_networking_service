@@ -103,7 +103,11 @@ class PostCreate(BaseModel):
 ## Used for updating a post (full update, PUT)
 class PostUpdate(BaseModel):
     content: str
+    reply_to_id: Optional[int] = None
+    hashtags: Optional[list[str]] = []
 
 ## Used for a partial update (PATCH)
 class PostPatch(BaseModel):
     content: Optional[str] = None
+    reply_to_id: Optional[int] = None
+    hashtags: Optional[list[str]] = []

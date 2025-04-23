@@ -38,11 +38,12 @@ def create_post(post_data: PostCreate, db: Session = Depends(get_db)):
 
 ## Updating a post.
 @router.put("/{post_id}")
-def update_post(post_id: int, title: str, content: str, db: Session = Depends(get_db)):
-    post = crud.update_post(db, post_id, title, content)
+def update_post(post_id: int, updated: PostUpdate, db: Session = Depends(get_db)):
+    post = crud.update_post(db, post_id, updated.content)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found.")
     return post
+
 
 ## Partial update of a post. Only the fields that are provided will be updated.
 @router.patch("/{post_id}")
