@@ -48,3 +48,8 @@ def patch_user(user_id: int, updates: UserPatch, db: Session = Depends(get_db)):
     if not updated_user:
         raise HTTPException(status_code=404, detail="User not found.")
     return updated_user
+
+## Delete user
+@router.delete("/{user_id}")
+def delete_user(user_id: int, db: Session = Depends(get_db)):
+    return crud.delete_user(db, user_id)
