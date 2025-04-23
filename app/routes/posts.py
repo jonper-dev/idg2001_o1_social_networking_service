@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.db import get_db
 from app import crud
+from app.models.models import PostCreate
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -28,8 +29,12 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 ###########################
 ### Creating a new post (or comment-post). A new post-ID will be assigned.
 @router.post("/")
-def create_post(title: str, content: str, user_id: int, db: Session = Depends(get_db)):
-    return crud.create_post(db, title, content, user_id)
+def create_post(post_data: PostCreate, db: Session = Depends(get_db)):
+    try:
+        return crud.create_post(db, post_data)
+    except Exception as e:
+        print("Error creating post:", e)
+        raise HTTPException(status_code=500, detail="Could not create post.")
 
 ### Updating a post.
 @router.put("/{post_id}")

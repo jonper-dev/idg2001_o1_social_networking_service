@@ -27,13 +27,18 @@ def follow_user(db: Session, follower_id: int, followed_id: int):
     return follower
 
 # --- POSTS ---
+def create_post(db: Session, post_data):
+    from app.models.models import Post, Hashtag  # Avoid circular imports
 
-def create_post(db: Session, user_id: int, content: str, hashtags: list[str] = [], reply_to_id: int = None):
-    post = Post(content=content, user_id=user_id, reply_to_id=reply_to_id)
+    post = Post(
+        content=post_data.content,
+        user_id=post_data.user_id,
+        reply_to_id=post_data.reply_to_id
+    )
 
-    # Process hashtags
-    for tag in hashtags:
-        tag = tag.lower()
+    # Handle hashtags (optional)
+    for tag in post_data.hashtags:
+        tag = tag.lower().strip()
         existing = db.query(Hashtag).filter(Hashtag.name == tag).first()
         if existing:
             post.hashtags.append(existing)
