@@ -3,7 +3,7 @@
 // ===============================
 $primary-color: #1DA1F2;
 $white: #fff;
-$light-bg: #f9f9f9;
+$light-bg: #f2f2f2;
 $dark-bg: #0d8bf0;
 $breakpoint: 768px;
 
@@ -203,4 +203,57 @@ main {
   .error {
     color: red;
     font-weight: bold;
+  }
+
+// ===============================
+// DARK MODE
+// ===============================
+body.dark {
+    background-color: #000000;
+    color: #e0e0e0;
+  
+    input,
+    textarea {
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      border: 1px solid #333;
+    }
+  
+    button {
+      background-color: #262626;
+      color: #e0e0e0;
+  
+      &:hover {
+        background-color: #555;
+      }
+    }
+  
+    header {
+      background-color: #2e2e2e;
+  
+      .logo__text {
+        color: #e0e0e0;
+      }
+  
+      .nav-links li a {
+        color: #e0e0e0;
+  
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+  
+    main #login,
+    main #signup,
+    main #post-box,
+    main #posts {
+      background-color: #2e2e2e;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+  
+    #posts #post-list .post {
+      background-color: #2a2a2a;
+      border-color: #444;
+    }
   }  
