@@ -28,7 +28,7 @@ if (menuToggle && navLinks) {
 
 // Sign up
 function signup() {
-  const username = document.getElementById("username").value;
+  const username = document.getElementById("name").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
@@ -66,9 +66,9 @@ function login() {
       if (data.user_id) {
         // Save session
         localStorage.setItem("user_id", data.user_id);
-        localStorage.setItem("username", data.username);
+        localStorage.setItem("username", data.name);
         // Redirect to feed or home page
-        window.location.href = "/feed.html"; // Update to match your actual file name
+        window.location.href = "/frontend/index.html"; // Update to match your actual file name
       } else {
         const msg = document.getElementById("login-message");
         msg.textContent = data.detail || "Login failed.";
@@ -96,7 +96,7 @@ function postPost() {
   const content = document.getElementById("post-content").value;
   const user_id = localStorage.getItem("user_id");
 
-  if (!user_id) {
+  if(!user_id) {
     alert("Please log in first!");
     return;
   }
@@ -117,34 +117,49 @@ function postPost() {
     .catch(err => console.error("Post error:", err));
 }
 
+// For rendering posts.
+function renderPosts(posts, container) {
+  container.innerHTML = "";
+
+  posts.forEach(post => {
+    const postDiv = document.createElement("div");
+    postDiv.className = "post";
+    postDiv.innerHTML = `
+      <strong>@${post.username || "anon"}</strong>: ${post.content}
+      <br><small>${new Date(post.timestamp).toLocaleString()}</small>
+    `;
+    container.appendChild(postDiv);
+  });
+}
+
+
 // Load post feed (also integrate caching-functions)
 async function loadPosts() {
-  const cached = getCachedPosts();
+  const postList = document.getElementById("post-list");
 
-  if (cached) {
+  // Try to show cached posts (if valid).
+  const cached = getCachedPosts();
+  if(cached) {
     console.log("Loaded posts from local cache.");
-    displayPosts(cached); // Uses existing rendering logic.
+    renderPosts(cached, postList);
   }
 
+  // Always try to fetch fresh posts.
   try {
-    fetch(`${API_BASE_URL}/posts/`)
-      .then(res => res.json())
-      .then(posts => {
-        const postList = document.getElementById("post-list");
-        postList.innerHTML = "";
+    const res = await fetch(`${API_BASE_URL}/posts/`);
+    if(!res.ok) throw new Error("Failed to fetch posts");
 
-        posts.forEach(post => {
-          const postDiv = document.createElement("div");
-          postDiv.className = "post";
-          postDiv.innerHTML = `
-            <strong>@${post.username || "anon"}</strong>: ${post.content}
-            <br><small>${new Date(post.timestamp).toLocaleString()}</small>
-          `;
-          postList.appendChild(postDiv);
-        });
-      })
+    const posts = await res.json();
+
+    cachePosts(posts); // Update cache
+    console.log("🔄 Fetched fresh posts and updated cache.");
+    renderPosts(posts, postList); // Replace with fresh posts
+  } catch(err) {
+    console.error("Load posts error:", err);
+    if(!cached) {
+      postList.innerHTML = "<p>Failed to load posts and no cached data available.</p>";
     }
-      .catch(err => console.error("Load posts error:", err));
+  }
 }
 
 // Load posts on startup
