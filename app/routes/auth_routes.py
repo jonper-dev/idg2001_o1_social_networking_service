@@ -6,38 +6,42 @@ from fastapi import APIRouter, Depends, HTTPException, Form
 from sqlalchemy.orm import Session
 from app.db import get_db
 from app import crud 
+from app.models import LoginInput
 
 router = APIRouter()
+
+
 
 ###############
 ### Signup  ###
 ###############
 @router.post("/signup/")
-def signup(
-     username: str = Form(...), 
-     email: str = Form(...), 
-     password: str = Form(...), 
-     db: Session = Depends(get_db)
-):
-    
-    existing_user = crud.get_user_by_email(db, email)
+def signup(data: SignupInput, db: Session = Depends(get_db)):
+    existing_user = crud.get_user_by_email(db, data.email)
     if existing_user:
         raise HTTPException(status_code=400, detail="User already exists")
 
-    new_user = crud.create_user(db, username, email, password)
-    return {"message": "Signup successful", "user": new_user}
+    new_user = crud.create_user(db, data.username, data.email, data.password)
+    return {
+        "message": "Signup successful",
+        "user_id": new_user.id,
+        "username": new_user.username
+    }
+
+
 
 ###############
 ### Login  ###
 ###############
 
 @router.post("/login/")
-def login(
-    email: str = Form(...), 
-    password: str = Form(...), 
-    db: Session = Depends(get_db)
-):
-    user = crud.verify_user_credentials(db, email, password)
+def login(data: LoginInput, db: Session = Depends(get_db)):
+    user = crud.verify_user_credentials(db, data.email, data.password)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    return {"message": "Login successful"}
+    
+    return {
+        "message": "Login successful",
+        "user_id": user.id,
+        "username": user.username
+    }

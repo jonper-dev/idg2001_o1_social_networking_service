@@ -50,56 +50,64 @@ function signup() {
 
 // Login
 function login() {
-    const email = document.getElementById("login-email").value;
-    const password = document.getElementById("login-password").value;
-  
-    fetch(`${API_BASE_URL}/login/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
+
+  fetch(`${API_BASE_URL}/login/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  })
+    .then(res => {
+      if (!res.ok) {
+        throw new Error("Login failed");
+      }
+      return res.json();
     })
-      .then(res => res.json())
-      .then(data => {
+    .then(data => {
+      if (data.user_id) {
+        // Save session
+        localStorage.setItem("user_id", data.user_id);
+        localStorage.setItem("username", data.username);
+        // Redirect to feed or home page
+        window.location.href = "/feed.html"; // Update to match your actual file name
+      } else {
         const msg = document.getElementById("login-message");
-        if (data.user_id) {
-          msg.textContent = "Welcome back, " + data.username + "!";
-          msg.className = "success";
-          // Save session
-          localStorage.setItem("user_id", data.user_id);
-          localStorage.setItem("username", data.username);
-        } else {
-          msg.textContent = data.detail || "Login failed.";
-          msg.className = "error";
-        }
-      })
-      .catch(err => {
-        console.error("Login error:", err);
-      });
-  }
+        msg.textContent = data.detail || "Login failed.";
+        msg.className = "error";
+      }
+    })
+    .catch(err => {
+      const msg = document.getElementById("login-message");
+      msg.textContent = err.message || "Login error.";
+      msg.className = "error";
+      console.error("Login error:", err);
+    });
+}
 
 // Logout
 function logout() {
-    localStorage.clear();
-    alert("You have been logged out.");
-    location.reload();
-  }
-  
+  localStorage.clear();
+  alert("You have been logged out.");
+  location.reload();
+}
+
 
 // Post a Cheep
 function postPost() {
-    const content = document.getElementById("post-content").value;
-    const user_id = localStorage.getItem("user_id");
-  
-    if (!user_id) {
-      alert("Please log in first!");
-      return;
-    }
-  
-    fetch(`${API_BASE_URL}/posts/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id, content })
-    })
+  const content = document.getElementById("post-content").value;
+  const user_id = localStorage.getItem("user_id");
+
+  if (!user_id) {
+    alert("Please log in first!");
+    return;
+  }
+
+  fetch(`${API_BASE_URL}/posts/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ user_id, content })
+  })
     .then(res => res.json())
     .then(data => {
       const msg = document.getElementById("post-message");
