@@ -1,4 +1,5 @@
-const API_BASE_URL = "https://idg2001-o1-social-networking-service.onrender.com";
+const API_BASE_URL =
+  "https://idg2001-o1-social-networking-service.onrender.com";
 
 // DARK MODE toggle with localStorage
 const darkToggle = document.getElementById("dark-toggle");
@@ -30,18 +31,26 @@ function signup() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  fetch(`${API_BASE_URL}/users/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, email, password_hash: password })
-  })
-    .then(res => res.json())
-    .then(data => {
-      const msg = document.getElementById("signup-message");
-      msg.textContent = data.message || data.detail || "Signup failed.";
-      msg.className = data.message ? "success" : "error";
+  // Hash the password
+  bcrypt.hash(password, 10, (err, hashedPassword) => {
+    if (err) {
+      console.error("Error hashing password:", err);
+      return;
+    }
+
+    fetch(`${API_BASE_URL}/users/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email, password_hash: password }),
     })
-    .catch(err => console.error("Signup error:", err));
+      .then((res) => res.json())
+      .then((data) => {
+        const msg = document.getElementById("signup-message");
+        msg.textContent = data.message || data.detail || "Signup failed.";
+        msg.className = data.message ? "success" : "error";
+      })
+      .catch((err) => console.error("Signup error:", err));
+  });
 }
 
 // Login
@@ -52,15 +61,15 @@ function login() {
   fetch(`${API_BASE_URL}/login/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({ email, password }),
   })
-    .then(res => {
+    .then((res) => {
       if (!res.ok) {
         throw new Error("Login failed");
       }
       return res.json();
     })
-    .then(data => {
+    .then((data) => {
       if (data.user_id) {
         // Save session
         localStorage.setItem("user_id", data.user_id);
@@ -73,7 +82,7 @@ function login() {
         msg.className = "error";
       }
     })
-    .catch(err => {
+    .catch((err) => {
       const msg = document.getElementById("login-message");
       msg.textContent = err.message || "Login error.";
       msg.className = "error";
@@ -88,7 +97,6 @@ function logout() {
   location.reload();
 }
 
-
 // Post a Cheep
 function postPost() {
   const content = document.getElementById("post-content").value;
@@ -102,28 +110,28 @@ function postPost() {
   fetch(`${API_BASE_URL}/posts/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ user_id, content })
+    body: JSON.stringify({ user_id, content }),
   })
-    .then(res => res.json())
-    .then(data => {
+    .then((res) => res.json())
+    .then((data) => {
       const msg = document.getElementById("post-message");
       msg.textContent = data.message || data.detail || "Post failed.";
       msg.className = data.message ? "success" : "error";
       document.getElementById("post-content").value = "";
       loadPosts(); // refresh post list
     })
-    .catch(err => console.error("Post error:", err));
+    .catch((err) => console.error("Post error:", err));
 }
 
 // Load post feed
 function loadPosts() {
   fetch(`${API_BASE_URL}/posts/`)
-    .then(res => res.json())
-    .then(posts => {
+    .then((res) => res.json())
+    .then((posts) => {
       const postList = document.getElementById("post-list");
       postList.innerHTML = "";
 
-      posts.forEach(post => {
+      posts.forEach((post) => {
         const postDiv = document.createElement("div");
         postDiv.className = "post";
         postDiv.innerHTML = `
@@ -133,7 +141,7 @@ function loadPosts() {
         postList.appendChild(postDiv);
       });
     })
-    .catch(err => console.error("Load posts error:", err));
+    .catch((err) => console.error("Load posts error:", err));
 }
 
 // Load posts on startup

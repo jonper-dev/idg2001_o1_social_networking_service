@@ -20,7 +20,7 @@ def signup(data: SignupInput, db: Session = Depends(get_db)):
     if existing_user:
         raise HTTPException(status_code=400, detail="User already exists")
 
-    new_user = crud.create_user(db, data.username, data.email, data.password)
+    new_user = crud.create_user(db, data.username, data.email, data.password_hash)
     return {
         "message": "Signup successful",
         "user_id": new_user.id,

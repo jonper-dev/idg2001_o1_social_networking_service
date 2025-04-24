@@ -49,7 +49,7 @@ def verify_user_credentials(db: Session, email: str, password: str):
 ## Signup
 def create_user(db: Session, username: str, email: str, password: str):
     hashed_pw = hash_password(password)
-    user = User(username=username, email=email, password=hashed_pw)
+    user = User(name=username, email=email, password=hashed_pw)
     db.add(user)
     db.commit()
     db.refresh(user)

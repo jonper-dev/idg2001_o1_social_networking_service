@@ -133,4 +133,4 @@ class LoginInput(BaseModel):
 class SignupInput(BaseModel):
     username: str
     email: EmailStr
-    password: str
+    password_hash: str
