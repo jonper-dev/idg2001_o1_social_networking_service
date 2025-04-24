@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, Table, Boolean, DateTime, func
 from sqlalchemy.orm import relationship, declarative_base
 
@@ -90,6 +90,8 @@ class UserPatch(BaseModel):
     email: Optional[str] = None
     password: Optional[str] = None
 
+
+
 #############
 ### Posts ###
 #############
@@ -111,3 +113,24 @@ class PostPatch(BaseModel):
     content: Optional[str] = None
     reply_to_id: Optional[int] = None
     hashtags: Optional[list[str]] = []
+
+
+
+#############
+### Login ###
+#############
+## Used for handling login requests.
+class LoginInput(BaseModel):
+    email: str
+    password: str
+    
+    
+    
+#############
+### Signup ###
+#############
+## Used for handling signup requests.    
+class SignupInput(BaseModel):
+    username: str
+    email: EmailStr
+    password: str

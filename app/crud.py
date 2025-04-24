@@ -29,14 +29,27 @@ def get_user_by_email(db: Session, email: str):
 
 def verify_user_credentials(db: Session, email: str, password: str):
     user = get_user_by_email(db, email)
+    if user and not user.password.startswith('$2b$'): 
+        
+        # Checking if password is hashed, if not it will hash it
+        # and save it to the database hashed
+        if password == user.password:  
+            hashed_pw = hash_password(password)
+            user.password = hashed_pw
+            db.commit()  # Save the hashed password
+            db.refresh(user)
+            return user
+        return None
+    
     if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
-        return user
+        return user         
+    
     return None
 
 ## Signup
 def create_user(db: Session, username: str, email: str, password: str):
     hashed_pw = hash_password(password)
-    user = User(username=username, email=email, password=password)
+    user = User(username=username, email=email, password=hashed_pw)
     db.add(user)
     db.commit()
     db.refresh(user)
