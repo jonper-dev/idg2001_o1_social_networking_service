@@ -75,7 +75,7 @@ function login() {
         localStorage.setItem("user_id", data.user_id);
         localStorage.setItem("username", data.username);
         // Redirect to feed or home page
-        window.location.href = "/feed.html"; // Update to match your actual file name
+        window.location.href = "/frontend/post.html";
       } else {
         const msg = document.getElementById("login-message");
         msg.textContent = data.detail || "Login failed.";
