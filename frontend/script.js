@@ -1,7 +1,3 @@
-
-////////////Fast copypaste code for future use
-
-
 const API_BASE_URL = "https://idg2001-o1-social-networking-service.onrender.com";
 
 // DARK MODE toggle with localStorage
