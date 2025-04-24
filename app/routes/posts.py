@@ -1,18 +1,29 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing import List
 from app.db import get_db
 from app import crud
-from app.models.models import PostCreate, PostUpdate, PostPatch
+from app.models.models import PostCreate, PostUpdate, PostPatch, PostOutput
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
 #########################
 ### -- GET-methods -- ###
 #########################
-## Getting all posts (and comment-posts).
-@router.get("/")
-def get_all_posts(db: Session = Depends(get_db)):
-    return crud.get_posts(db)
+## Getting all posts (and comment-posts), also used for showing posts.
+@router.get("/", response_model=List[PostOutput])
+def get_posts(db: Session = Depends(get_db)):
+    posts = crud.get_posts(db)
+    return [
+        PostOutput(
+            id=post.id,
+            content=post.content,
+            timestamp=post.created_at,
+            user_id=post.user_id,
+            username=post.user.name ## From the table-join.
+        )
+        for post in posts
+    ]
 
 ## Getting a specific post by its ID.
 @router.get("/{post_id}")
