@@ -116,9 +116,9 @@ def create_post(db: Session, post_data):
     db.refresh(post)
     return post
 
-## Get all posts (uncludes user table for joined table-operations)
+## Get all posts (includes user table [author here] for joined table-operations)
 def get_posts(db: Session):
-    return db.query(Post).options(joinedload(Post.user)).all()
+    return db.query(Post).options(joinedload(Post.author)).all()
 
 ## Get post by ID
 def get_post(db: Session, post_id: int):

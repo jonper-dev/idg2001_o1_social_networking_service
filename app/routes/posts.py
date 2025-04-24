@@ -20,7 +20,7 @@ def get_posts(db: Session = Depends(get_db)):
             content=post.content,
             timestamp=post.created_at,
             user_id=post.user_id,
-            username=post.user.name ## From the table-join.
+            username=post.author.name ## From the table-join.
         )
         for post in posts
     ]
