@@ -43,7 +43,7 @@ PATCH /posts/{post_id} — Patch Post: Partially updates a post.
 
 DELETE /posts/{post_id} — Delete Post: Removes a post.
 
-![fastAPI docs.](/images/fastAPI.jpg")
+![fastAPI docs.](./images/fastAPI.jpg)
 
 ### mySQL hosted on Clever Cloud
 
@@ -54,16 +54,16 @@ Cheeper has their own organization page on the service with each developer acces
 
 Each developer has database credentials saved in an .env for local testing. Credentials are encrypted with dotenv for security purposes, but db credentials are also stored in Render for server deployment.
 
-![Database configuration.](/images/db-config.jpg")
+![Database configuration.](./images/db-config.jpg)
 
 #### SQLAlchemy
 We decided to implement the use of SQLAlchemy in our API to ensure cleaner code and more secure queries. This allows for python code, instead of having to write raw SQL queries.
 
-![SQLAlchemy import for db schemas.](/images/sqlalchemy.jpg")
+![SQLAlchemy import for db schemas.](./images/sqlalchemy.jpg)
 
 SQLAlchemy also simplifies database access by establishing a database connection through a create_engine function that provides connection with the database.
 
-![SQLAlchemy import for db schemas.](/images/sqlalchemy-engine.jpg")
+![SQLAlchemy import for db schemas.](./images/sqlalchemy-engine.jpg)
 
 ### Render
 The API is deployed on Render on https://idg2001-o1-social-networking-service.onrender.com/
