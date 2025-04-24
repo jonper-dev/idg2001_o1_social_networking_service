@@ -24,7 +24,7 @@ def signup(data: SignupInput, db: Session = Depends(get_db)):
     return {
         "message": "Signup successful",
         "user_id": new_user.id,
-        "username": new_user.username
+        "username": new_user.name
     }
 
 
@@ -42,5 +42,5 @@ def login(data: LoginInput, db: Session = Depends(get_db)):
     return {
         "message": "Login successful",
         "user_id": user.id,
-        "username": user.username
+        "username": user.name
     }
