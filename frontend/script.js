@@ -1,3 +1,5 @@
+import { getCachedPosts, cachePosts } from "./local-caching.js";
+
 const API_BASE_URL = "https://idg2001-o1-social-networking-service.onrender.com";
 
 // DARK MODE toggle with localStorage
@@ -115,25 +117,34 @@ function postPost() {
     .catch(err => console.error("Post error:", err));
 }
 
-// Load post feed
-function loadPosts() {
-  fetch(`${API_BASE_URL}/posts/`)
-    .then(res => res.json())
-    .then(posts => {
-      const postList = document.getElementById("post-list");
-      postList.innerHTML = "";
+// Load post feed (also integrate caching-functions)
+async function loadPosts() {
+  const cached = getCachedPosts();
 
-      posts.forEach(post => {
-        const postDiv = document.createElement("div");
-        postDiv.className = "post";
-        postDiv.innerHTML = `
-          <strong>@${post.username || "anon"}</strong>: ${post.content}
-          <br><small>${new Date(post.timestamp).toLocaleString()}</small>
-        `;
-        postList.appendChild(postDiv);
-      });
-    })
-    .catch(err => console.error("Load posts error:", err));
+  if (cached) {
+    console.log("Loaded posts from local cache.");
+    displayPosts(cached); // Uses existing rendering logic.
+  }
+
+  try {
+    fetch(`${API_BASE_URL}/posts/`)
+      .then(res => res.json())
+      .then(posts => {
+        const postList = document.getElementById("post-list");
+        postList.innerHTML = "";
+
+        posts.forEach(post => {
+          const postDiv = document.createElement("div");
+          postDiv.className = "post";
+          postDiv.innerHTML = `
+            <strong>@${post.username || "anon"}</strong>: ${post.content}
+            <br><small>${new Date(post.timestamp).toLocaleString()}</small>
+          `;
+          postList.appendChild(postDiv);
+        });
+      })
+    }
+      .catch(err => console.error("Load posts error:", err));
 }
 
 // Load posts on startup
