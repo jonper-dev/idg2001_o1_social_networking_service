@@ -2,7 +2,7 @@
 ### -- Authentication handling -- ###
 #####################################
 
-from fastapi import APIRouter, Depends, HTTPException, Form
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.db import get_db
 from app import crud 
