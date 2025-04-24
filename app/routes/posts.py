@@ -12,10 +12,10 @@ router = APIRouter(prefix="/posts", tags=["posts"])
 #########################
 ## Getting all posts (and comment-posts), also used for showing posts.
 @router.get("/", response_model=List[PostOutput])
-def read_posts(db: Session = Depends(get_db)):
+def get_posts(db: Session = Depends(get_db)):
     posts = crud.get_posts(db)
     return [
-        PostOut(
+        PostOutput(
             id=post.id,
             content=post.content,
             timestamp=post.created_at,

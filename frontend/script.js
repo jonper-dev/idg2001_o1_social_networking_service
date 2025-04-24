@@ -66,7 +66,7 @@ function login() {
       if (data.user_id) {
         // Save session
         localStorage.setItem("user_id", data.user_id);
-        localStorage.setItem("username", data.name);
+        localStorage.setItem("name", data.name);
         // Redirect to feed or home page
         window.location.href = "/frontend/index.html"; // Update to match your actual file name
       } else {
