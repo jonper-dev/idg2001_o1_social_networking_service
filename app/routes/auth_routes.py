@@ -14,7 +14,7 @@ router = APIRouter()
 ###############
 ### Signup  ###
 ###############
-@router.post("/signup/")
+@router.post("/signup")
 def signup(data: SignupInput, db: Session = Depends(get_db)):
     existing_user = crud.get_user_by_email(db, data.email)
     if existing_user:
@@ -30,10 +30,9 @@ def signup(data: SignupInput, db: Session = Depends(get_db)):
 
 
 ###############
-### Login  ###
+### Login  ####
 ###############
-
-@router.post("/login/")
+@router.post("/login")
 def login(data: LoginInput, db: Session = Depends(get_db)):
     user = crud.verify_user_credentials(db, data.email, data.password)
     if not user:
@@ -42,5 +41,5 @@ def login(data: LoginInput, db: Session = Depends(get_db)):
     return {
         "message": "Login successful",
         "user_id": user.id,
-        "username": user.name
+        "name": user.name
     }

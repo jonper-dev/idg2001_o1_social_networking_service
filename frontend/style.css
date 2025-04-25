@@ -17,6 +17,16 @@ body textarea {
   border: 1px solid #ddd;
   border-radius: 5px;
 }
+body .like-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+body .like-btn:hover {
+  transform: scale(1.2);
+}
 body button {
   padding: 10px 15px;
   background: #1DA1F2;

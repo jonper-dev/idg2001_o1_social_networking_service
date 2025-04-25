@@ -58,11 +58,17 @@ def update_post(post_id: int, updated: PostUpdate, db: Session = Depends(get_db)
 
 ## Partial update of a post. Only the fields that are provided will be updated.
 @router.patch("/{post_id}")
-def patch_post(post_id: int, updates: PostPatch, db: Session = Depends(get_db)):
-    updated_post = crud.partial_update_post(db, post_id, updates.dict(exclude_unset=True))
-    if not updated_post:
-        raise HTTPException(status_code=404, detail="Post not found.")
-    return updated_post
+def partial_update_post(post_id: int, post_update: PostUpdate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    post = db.query(Post).filter(Post.id == post_id).first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    if post.user_id != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Not authorized to edit this post")
+    
+    post.content = post_update.content
+    db.commit()
+    db.refresh(post)
+    return post
 
 ## Delete post
 @router.delete("/{post_id}")
