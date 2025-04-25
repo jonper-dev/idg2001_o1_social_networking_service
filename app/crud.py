@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, joinedload
-from app.models.models import User, Post, Hashtag
+from app.models.models import User, Post, Hashtag, likes, post_hashtags
 from sqlalchemy import or_
 import bcrypt
 
@@ -13,6 +13,7 @@ def hash_password(password: str) -> str:
 ## Password verification
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+
 
 ###################
 ### -- USERS -- ###
@@ -155,14 +156,21 @@ def delete_post(db: Session, post_id: int):
     db.commit()
     return post
 
-## Like post
 def like_post(db: Session, user_id: int, post_id: int):
-    post = db.query(Post).get(post_id)
-    user = db.query(User).get(user_id)
-    if user not in post.likes:
-        post.likes.append(user)
-        db.commit()
-    return post
+    # Insert a like into the likes table
+    new_like = likes.insert().values(user_id=user_id, post_id=post_id)
+    db.execute(new_like)
+    db.commit()
+
+def unlike_post(db: Session, user_id: int, post_id: int):
+    # Remove the like from the likes table
+    db.execute(likes.delete().where(likes.c.user_id == user_id).where(likes.c.post_id == post_id))
+    db.commit()
+
+def is_post_liked_by_user(db: Session, post_id: int, user_id: int):
+    # Check if the user has already liked the post
+    result = db.execute(likes.select().where(likes.c.user_id == user_id).where(likes.c.post_id == post_id)).fetchone()
+    return result is not None
 
 ## Reply to post
 def reply_to_post(db: Session, user_id: int, content: str, parent_id: int):
