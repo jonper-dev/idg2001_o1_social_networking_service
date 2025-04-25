@@ -215,7 +215,7 @@ function renderPosts(posts, container) {
     // Create like button
     const likeBtn = document.createElement("button");
     likeBtn.classList.add("like-btn");
-    likeBtn.innerHTML = post.is_liked_by_user ? "❤️" : "🤍";
+    likeBtn.textContent = post.is_liked_by_user ? "❤️" : "🤍";
     likeBtn.style.marginLeft = "10px";
 
     // Create like count
@@ -227,8 +227,9 @@ function renderPosts(posts, container) {
     likeBtn.addEventListener("click", async () => {
       const token = localStorage.getItem("token");
       const method = post.is_liked_by_user ? "DELETE" : "POST";
-      const url = `http://localhost:8000/posts/${post.id}/like`;
-
+      const url = `${API_BASE_URL}/posts/${post.id}/like`;
+      
+      try {
       const res = await fetch(url, {
         method: method,
         headers: {
@@ -239,12 +240,18 @@ function renderPosts(posts, container) {
       if (res.ok) {
         post.is_liked_by_user = !post.is_liked_by_user;
         post.likes += post.is_liked_by_user ? 1 : -1;
+
+        // Update like button display
         likeBtn.innerHTML = post.is_liked_by_user ? "❤️" : "🤍";
         likeCount.textContent = ` ${post.likes}`;
         likeBtn.appendChild(likeCount);
       } else {
         alert("Failed to update like.");
       }
+    } catch (err) {
+      console.error("Like button error:", err);
+      alert("Error with like button.");
+    }
     });
 
     postDiv.innerHTML = `
@@ -257,7 +264,7 @@ function renderPosts(posts, container) {
 
     container.appendChild(postDiv);
   });
-}
+};
 
 // Load posts on startup
 window.onload = loadPosts;
