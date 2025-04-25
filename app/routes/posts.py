@@ -4,6 +4,7 @@ from typing import List
 from app.db import get_db
 from app import crud
 from app.models.models import PostCreate, PostUpdate, PostPatch, PostOutput
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -71,3 +72,20 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
     if not deleted:
         raise HTTPException(status_code=404, detail="Post not found.")
     return {"message": "Post deleted."}
+
+## Edit post endpoint
+class PostUpdate(BaseModel):
+    content: str
+
+@router.patch("/posts/{post_id}")
+def update_post(post_id: int, post_update: PostUpdate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    post = db.query(Post).filter(Post.id == post_id).first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    if post.user_id != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Not authorized to edit this post")
+    
+    post.content = post_update.content
+    db.commit()
+    db.refresh(post)
+    return post

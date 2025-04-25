@@ -64,6 +64,36 @@ likeBtn.addEventListener("click", async () => {
 // Append likeBtn to postElement (where you're assembling your post DOM)
 postElement.appendChild(likeBtn);
 
+// Inside renderPost after likeButton and deleteBtn
+
+const editBtn = document.createElement("button");
+editBtn.innerText = "Edit";
+editBtn.addEventListener("click", () => {
+  const newContent = prompt("Edit your tweet:", post.content);
+  if (newContent && newContent !== post.content) {
+    fetch(`${api}/posts/${post.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ content: newContent }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Edit failed");
+        return res.json();
+      })
+      .then((updatedPost) => {
+        postContent.innerText = updatedPost.content;
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Could not update the tweet.");
+      });
+  }
+});
+postCard.appendChild(editBtn);
+
 // Sign up
 function signup() {
   const username = document.getElementById("name").value;
