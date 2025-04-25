@@ -49,7 +49,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.querySelector("#search-button");
   if (searchBtn) {
     searchBtn.addEventListener("click", searchPosts);
-
+  }
+});
 // ########################
 // ### Global variables ###
 // ########################
