@@ -4,7 +4,6 @@ from typing import List
 from app.db import get_db
 from app import crud
 from app.models.models import PostCreate, PostUpdate, PostPatch, PostOutput
-from pydantic import BaseModel
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -59,25 +58,6 @@ def update_post(post_id: int, updated: PostUpdate, db: Session = Depends(get_db)
 
 ## Partial update of a post. Only the fields that are provided will be updated.
 @router.patch("/{post_id}")
-def patch_post(post_id: int, updates: PostPatch, db: Session = Depends(get_db)):
-    updated_post = crud.partial_update_post(db, post_id, updates.dict(exclude_unset=True))
-    if not updated_post:
-        raise HTTPException(status_code=404, detail="Post not found.")
-    return updated_post
-
-## Delete post
-@router.delete("/{post_id}")
-def delete_post(post_id: int, db: Session = Depends(get_db)):
-    deleted = crud.delete_post(db, post_id)
-    if not deleted:
-        raise HTTPException(status_code=404, detail="Post not found.")
-    return {"message": "Post deleted."}
-
-## Edit post endpoint
-class PostUpdate(BaseModel):
-    content: str
-
-@router.patch("/posts/{post_id}")
 def update_post(post_id: int, post_update: PostUpdate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
@@ -89,3 +69,11 @@ def update_post(post_id: int, post_update: PostUpdate, db: Session = Depends(get
     db.commit()
     db.refresh(post)
     return post
+
+## Delete post
+@router.delete("/{post_id}")
+def delete_post(post_id: int, db: Session = Depends(get_db)):
+    deleted = crud.delete_post(db, post_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Post not found.")
+    return {"message": "Post deleted."}
