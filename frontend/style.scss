@@ -31,6 +31,17 @@ body {
     border-radius: 5px;
   }
 
+  .like-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .like-btn:hover {
+    transform: scale(1.2);
+  }  
+
   button {
     padding: 10px 15px;
     background: $primary-color;
