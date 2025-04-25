@@ -44,6 +44,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// Searchbar button
+document.addEventListener("DOMContentLoaded", () => {
+  const searchBtn = document.querySelector("#search-button");
+  if (searchBtn) {
+    searchBtn.addEventListener("click", searchPosts);
+  }
+});
 // ########################
 // ### Global variables ###
 // ########################
@@ -72,6 +79,18 @@ if (menuToggle && navLinks) {
   menuToggle.addEventListener("click", () => {
     navLinks.classList.toggle("active");
   });
+}
+
+// Searchbar input
+function searchPosts() {
+  const query = document.querySelector("#search-input").value.trim();
+  if (!query) return;
+
+  fetch(`${api}/posts/search/?query=${encodeURIComponent(query)}`)
+    .then((res) => res.json())
+    .then((posts) => {
+      renderAllPosts(posts);
+    });
 }
 
 // Sign up
