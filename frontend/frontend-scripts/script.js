@@ -74,6 +74,17 @@ if (menuToggle && navLinks) {
   });
 }
 
+function searchPosts() {
+  const query = document.querySelector("#search-input").value.trim();
+  if (!query) return;
+
+  fetch(`${api}/posts/search/?query=${encodeURIComponent(query)}`)
+    .then((res) => res.json())
+    .then((posts) => {
+      renderAllPosts(posts);
+    });
+}
+
 // Sign up
 function signup() {
   const username = document.getElementById("name").value;
