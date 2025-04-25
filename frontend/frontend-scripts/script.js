@@ -31,9 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Authentication message
-const authMsg = document.addEventListener("DOMContentLoaded");
-
 // Welcome-message
 document.addEventListener("DOMContentLoaded", () => {
   const welcomeMessage = document.querySelector("#welcome-message");
@@ -45,6 +42,13 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("No 'user_name' found in storage.");
   }
 });
+
+
+// ########################
+// ### Global variables ###
+// ########################
+// Authentication message
+const authMsg = document.querySelector("#auth-message");
 
 
 
