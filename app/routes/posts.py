@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from typing import List
@@ -87,9 +87,9 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
 ### Like Post ###
 ###############
 @router.post("/like/{post_id}")
-def like_post(post_id: int, db: Session = Depends(get_db), response: Response = Depends()):
+def like_post(post_id: int, request: Request, db: Session = Depends(get_db)):
     # Get the session ID from the cookie
-    session_id = response.cookies.get("session_id")
+    session_id = request.cookies.get("session_id")
     if not session_id or session_id not in session_store:
         raise HTTPException(status_code=401, detail="User not authenticated")
 
@@ -113,9 +113,9 @@ def like_post(post_id: int, db: Session = Depends(get_db), response: Response = 
 ### Unlike Post ###
 ###############
 @router.post("/unlike/{post_id}")
-def unlike_post(post_id: int, db: Session = Depends(get_db), response: Response = Depends()):
+def unlike_post(post_id: int, request: Request, db: Session = Depends(get_db)):
     # Get the session ID from the cookie
-    session_id = response.cookies.get("session_id")
+    session_id = request.cookies.get("session_id")
     if not session_id or session_id not in session_store:
         raise HTTPException(status_code=401, detail="User not authenticated")
 
