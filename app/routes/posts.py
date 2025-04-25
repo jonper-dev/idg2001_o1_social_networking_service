@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from app.db import get_db
 from app import crud
-from app.models.models import PostCreate, PostUpdate, PostPatch, PostOutput
+from app.models.models import Post, PostCreate, PostUpdate, PostPatch, PostOutput
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -58,12 +58,13 @@ def update_post(post_id: int, updated: PostUpdate, db: Session = Depends(get_db)
 
 ## Partial update of a post. Only the fields that are provided will be updated.
 @router.patch("/{post_id}")
-def partial_update_post(post_id: int, post_update: PostUpdate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+def partial_update_post(post_id: int, post_update: PostPatch, db: Session = Depends(get_db)):
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
-    if post.user_id != current_user["id"]:
-        raise HTTPException(status_code=403, detail="Not authorized to edit this post")
+        raise HTTPException(status_code=404, detail="Post not found.")
+    ## Find a proper way to check for currently logged in user later.
+    # if post.user_id != current_user["id"]:
+    #     raise HTTPException(status_code=403, detail="Not authorized to edit this post.")
     
     post.content = post_update.content
     db.commit()
