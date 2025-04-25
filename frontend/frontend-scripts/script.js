@@ -13,13 +13,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Logout-button
+// Authentication button (bottom logout-/login-button)
 document.addEventListener("DOMContentLoaded", () => {
-  const logoutBtn = document.querySelector("#logout-button");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", logout);
+  const authButton = document.querySelector("#auth-button");
+  const isLoggedIn = !!localStorage.getItem("user_id");
+  
+  if (authButton) {
+    if (isLoggedIn) {
+      authButton.textContent = "Log Out";
+      authButton.addEventListener("click", logout);
+    } else {
+      authButton.textContent = "Log In";
+      authButton.addEventListener("click", () => {
+        window.location.href = "login_signup.html";
+      });
+    }
   }
 });
+
+// Authentication message
+const authMsg = document.addEventListener("DOMContentLoaded");
 
 // Welcome-message
 document.addEventListener("DOMContentLoaded", () => {
@@ -193,7 +206,8 @@ function login() {
 // Logout
 function logout() {
   localStorage.clear();
-  alert("You have been logged out.");
+  console.log("User logged out.");
+  authMsg.textContent = "You have been logged out.";
   location.reload();
 };
 
