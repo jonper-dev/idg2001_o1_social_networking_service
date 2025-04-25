@@ -26,6 +26,44 @@ if (menuToggle && navLinks) {
   });
 }
 
+// Create like button
+const likeBtn = document.createElement("button");
+likeBtn.classList.add("like-btn");
+likeBtn.innerHTML = post.is_liked_by_user ? "❤️" : "🤍";
+likeBtn.style.marginLeft = "10px";
+
+// Create like count
+const likeCount = document.createElement("span");
+likeCount.textContent = ` ${post.likes}`;
+likeBtn.appendChild(likeCount);
+
+// Like/unlike logic
+likeBtn.addEventListener("click", async () => {
+  const token = localStorage.getItem("token");
+  const method = post.is_liked_by_user ? "DELETE" : "POST";
+  const url = `http://localhost:8000/posts/${post.id}/like`;
+
+  const res = await fetch(url, {
+    method: method,
+    headers: {
+      "Authorization": `Bearer ${token}`,
+    },
+  });
+
+  if (res.ok) {
+    post.is_liked_by_user = !post.is_liked_by_user;
+    post.likes += post.is_liked_by_user ? 1 : -1;
+    likeBtn.innerHTML = post.is_liked_by_user ? "❤️" : "🤍";
+    likeCount.textContent = ` ${post.likes}`;
+    likeBtn.appendChild(likeCount);
+  } else {
+    alert("Failed to update like.");
+  }
+});
+
+// Append likeBtn to postElement (where you're assembling your post DOM)
+postElement.appendChild(likeBtn);
+
 // Sign up
 function signup() {
   const username = document.getElementById("name").value;
