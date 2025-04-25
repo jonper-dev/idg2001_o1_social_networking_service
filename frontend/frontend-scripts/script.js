@@ -76,11 +76,7 @@ function login() {
         localStorage.setItem("user_id", data.user_id);
         localStorage.setItem("name", data.name);
         // Redirect to feed or home page
-<<<<<<< HEAD:frontend/script.js
-        window.location.href = "/frontend/post.html";
-=======
         window.location.href = "/frontend/index.html"; // Update to match your actual file name
->>>>>>> 21ccbd279b1e203fa07b579c29d0538d709de26e:frontend/frontend-scripts/script.js
       } else {
         const msg = document.getElementById("login-message");
         msg.textContent = data.detail || "Login failed.";
@@ -128,27 +124,6 @@ function postPost() {
     .catch((err) => console.error("Post error:", err));
 }
 
-<<<<<<< HEAD:frontend/script.js
-// Load post feed
-function loadPosts() {
-  fetch(`${API_BASE_URL}/posts/`)
-    .then((res) => res.json())
-    .then((posts) => {
-      const postList = document.getElementById("post-list");
-      postList.innerHTML = "";
-
-      posts.forEach((post) => {
-        const postDiv = document.createElement("div");
-        postDiv.className = "post";
-        postDiv.innerHTML = `
-          <strong>@${post.username || "anon"}</strong>: ${post.content}
-          <br><small>${new Date(post.timestamp).toLocaleString()}</small>
-        `;
-        postList.appendChild(postDiv);
-      });
-    })
-    .catch((err) => console.error("Load posts error:", err));
-=======
 // For rendering posts.
 function renderPosts(posts, container) {
   container.innerHTML = "";
@@ -192,7 +167,6 @@ async function loadPosts() {
       postList.innerHTML = "<p>Failed to load posts and no cached data available.</p>";
     }
   }
->>>>>>> 21ccbd279b1e203fa07b579c29d0538d709de26e:frontend/frontend-scripts/script.js
 }
 
 // Load posts on startup
