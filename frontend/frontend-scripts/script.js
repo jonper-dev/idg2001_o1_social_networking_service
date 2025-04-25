@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Authentication button (bottom logout-/login-button), and logout-message.
+// Authentication-button (bottom logout-/login-button), and logout-message.
 document.addEventListener("DOMContentLoaded", () => {
   const authButton = document.querySelector("#auth-button");
   const isLoggedIn = !!localStorage.getItem("user_id");
@@ -52,13 +52,22 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Searchbar button
+// Searchbar-button
 document.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.querySelector("#search-button");
   if (searchBtn) {
     searchBtn.addEventListener("click", searchPosts);
   }
 });
+
+// Post-button
+document.addEventListener("DOMContentLoaded", () => {
+  const postBtn = document.querySelector("#post-button");
+  if (postBtn) {
+    postBtn.addEventListener("click", postPost);
+  }
+});
+
 
 
 
@@ -178,7 +187,7 @@ function logout() {
   location.reload();
 }
 
-// Post a Cheep
+// Post a Cheep (Cheep a post? Cheep something?)
 function postPost() {
   const content = document.getElementById("post-content").value;
   const user_id = localStorage.getItem("user_id");
@@ -195,11 +204,16 @@ function postPost() {
   })
     .then((res) => res.json())
     .then((data) => {
-      const msg = document.getElementById("post-message");
-      msg.textContent = data.message || data.detail || "Post failed.";
-      msg.className = data.message ? "success" : "error";
-      document.getElementById("post-content").value = "";
-      loadPosts(); // refresh post list
+      const msg = document.querySelector("#post-message");
+      const success = data.id && data.content;
+    
+      msg.textContent = success ? "Post created successfully!" : data.detail || "Post failed.";
+      msg.className = success ? "success" : "error";
+    
+      if (success) {
+        document.querySelector("#post-content").value = "";
+        loadPosts(); // Refresh the post list.
+      }
     })
     .catch((err) => console.error("Post error:", err));
 }
