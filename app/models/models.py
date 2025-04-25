@@ -126,7 +126,10 @@ class PostOutput(BaseModel):
     class Config:
         orm_mode = True
 
-
+## Like a post
+class PostLike(BaseModel):
+    user_id: int
+    post_id: int
 
 #############
 ### Login ###

@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 from typing import List
 from app.db import get_db
 from app import crud
-from app.models.models import Post, PostCreate, PostUpdate, PostPatch, PostOutput
+from app.models.models import Post, PostCreate, PostUpdate, PostPatch, PostOutput, PostLike, post_hashtags
+
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -78,3 +79,61 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
     if not deleted:
         raise HTTPException(status_code=404, detail="Post not found.")
     return {"message": "Post deleted."}
+
+###############
+### Like Post ###
+###############
+@router.post("/like/{post_id}")
+def like_post(post_id: int, db: Session = Depends(get_db), response: Response = Depends()):
+    # Get the session ID from the cookie
+    session_id = response.cookies.get("session_id")
+    if not session_id or session_id not in session_store:
+        raise HTTPException(status_code=401, detail="User not authenticated")
+
+    user_id = session_store[session_id]  # Get the user ID from session store
+
+    # Check if the post already exists
+    post = crud.get_post_by_id(db, post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+
+    # Check if the user has already liked the post
+    if crud.is_post_liked_by_user(db, post_id, user_id):
+        raise HTTPException(status_code=400, detail="Already liked this post")
+
+    # Like the post by inserting into the likes table
+    crud.like_post(db, user_id, post_id)
+
+    return JSONResponse(content={"message": "Post liked successfully"}, status_code=200)
+
+###############
+### Unlike Post ###
+###############
+@router.post("/unlike/{post_id}")
+def unlike_post(post_id: int, db: Session = Depends(get_db), response: Response = Depends()):
+    # Get the session ID from the cookie
+    session_id = response.cookies.get("session_id")
+    if not session_id or session_id not in session_store:
+        raise HTTPException(status_code=401, detail="User not authenticated")
+
+    user_id = session_store[session_id]  # Get the user ID from session store
+
+    # Check if the post exists
+    post = crud.get_post_by_id(db, post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+
+    # Check if the user has liked the post
+    if not crud.is_post_liked_by_user(db, post_id, user_id):
+        raise HTTPException(status_code=400, detail="Post not liked yet")
+
+    # Unlike the post by removing from the likes table
+    crud.unlike_post(db, user_id, post_id)
+
+    return JSONResponse(content={"message": "Post unliked successfully"}, status_code=200)
+
+## Search posts by content
+@router.get("/search")
+def search_posts(query: str, db: Session = Depends(get_db)):
+    results = db.query(Post).filter(Post.content.ilike(f"%{query}%")).order_by(Post.created_at.desc()).all()
+    return results
