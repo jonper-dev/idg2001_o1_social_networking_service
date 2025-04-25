@@ -58,7 +58,7 @@ def update_post(post_id: int, updated: PostUpdate, db: Session = Depends(get_db)
 
 ## Partial update of a post. Only the fields that are provided will be updated.
 @router.patch("/{post_id}")
-def update_post(post_id: int, post_update: PostUpdate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+def partial_update_post(post_id: int, post_update: PostUpdate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
