@@ -44,6 +44,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// Searchbar button
+document.addEventListener("DOMContentLoaded", () => {
+  const searchBtn = document.querySelector("#search-button");
+  if (searchBtn) {
+    searchBtn.addEventListener("click", searchPosts);
+
 // ########################
 // ### Global variables ###
 // ########################
@@ -74,6 +80,7 @@ if (menuToggle && navLinks) {
   });
 }
 
+// Searchbar input
 function searchPosts() {
   const query = document.querySelector("#search-input").value.trim();
   if (!query) return;
