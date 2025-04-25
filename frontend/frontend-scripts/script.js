@@ -14,10 +14,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Authentication button (bottom logout-/login-button)
+// Authentication button (bottom logout-/login-button), and logout-message.
 document.addEventListener("DOMContentLoaded", () => {
   const authButton = document.querySelector("#auth-button");
   const isLoggedIn = !!localStorage.getItem("user_id");
+  const authMsg = document.getElementById("auth-message");
+  const logoutMsg = sessionStorage.getItem("logoutMessage");
+
+  if (logoutMsg && authMsg) {
+    authMsg.textContent = logoutMsg;
+    authMsg.classList.add("info"); // Optional styling class
+    sessionStorage.removeItem("logoutMessage"); // Clearing it on reload.
+  }
 
   if (authButton) {
     if (isLoggedIn) {
@@ -51,6 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
     searchBtn.addEventListener("click", searchPosts);
   }
 });
+
+
+
 // ########################
 // ### Global variables ###
 // ########################
@@ -158,9 +169,12 @@ function login() {
 
 // Logout
 function logout() {
-  localStorage.clear();
+  // Only removing user-related data, not others (like lightmode/darkmode-setting).
+  localStorage.removeItem("user_id");
+  localStorage.removeItem("user_name");
   console.log("User logged out.");
-  authMsg.textContent = "You have been logged out.";
+
+  sessionStorage.setItem("logoutMessage", "You have been logged out.");
   location.reload();
 }
 

@@ -205,6 +205,12 @@ main #posts #post-list .post {
   font-weight: bold;
 }
 
+.auth-message {
+  color: #0a0;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
 body.dark {
   background-color: #000000;
   color: #e0e0e0;
