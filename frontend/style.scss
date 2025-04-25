@@ -236,12 +236,18 @@ main {
 .success {
     color: green;
     font-weight: bold;
-  }
-  
-  .error {
-    color: red;
-    font-weight: bold;
-  }
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
+
+.auth-message {
+  color: #0a0;
+  font-weight: bold;
+  margin-top: 1rem;
+}
 
 // ===============================
 // DARK MODE
