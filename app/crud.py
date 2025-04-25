@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.models import User, Post, Hashtag
 from sqlalchemy import or_
 import bcrypt
@@ -47,9 +47,9 @@ def verify_user_credentials(db: Session, email: str, password: str):
     return None
 
 ## Signup
-def create_user(db: Session, username: str, email: str, password: str):
+def create_user(db: Session, name: str, email: str, password: str):
     hashed_pw = hash_password(password)
-    user = User(name=username, email=email, password=hashed_pw)
+    user = User(name=name, email=email, password=hashed_pw)
     db.add(user)
     db.commit()
     db.refresh(user)
@@ -116,9 +116,9 @@ def create_post(db: Session, post_data):
     db.refresh(post)
     return post
 
-## Get all posts
+## Get all posts (includes user table [author here] for joined table-operations)
 def get_posts(db: Session):
-    return db.query(Post).all()
+    return db.query(Post).options(joinedload(Post.author)).all()
 
 ## Get post by ID
 def get_post(db: Session, post_id: int):

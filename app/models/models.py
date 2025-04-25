@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, EmailStr
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, Table, Boolean, DateTime, func
@@ -113,6 +114,17 @@ class PostPatch(BaseModel):
     content: Optional[str] = None
     reply_to_id: Optional[int] = None
     hashtags: Optional[list[str]] = []
+
+## Used for detailed post-display, including user-information.
+class PostOutput(BaseModel):
+    id: int
+    content: str
+    timestamp: datetime
+    user_id: int
+    username: str
+
+    class Config:
+        orm_mode = True
 
 
 

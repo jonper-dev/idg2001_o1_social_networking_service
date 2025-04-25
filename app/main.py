@@ -3,13 +3,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from app.db import get_db
 from app.routes import users, posts, auth_routes ## Importing our route modules
-## Note that directories are separated by a dot (.) and not a slash (/).
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5500"],  # Only allow your frontend during dev
+    ## Allowed origins, frontend during development, more when deploying.
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "https://idg2001-o1-social-networking-service.onrender.com"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
