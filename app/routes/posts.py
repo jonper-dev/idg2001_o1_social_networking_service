@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from typing import List
 from app.db import get_db
 from app import crud
-from app.models.models import Post, PostCreate, PostUpdate, PostPatch, PostOutput, PostLike, post_hashtags
+from app.models.models import Post, PostCreate, PostUpdate, PostPatch, PostOutput, likes, post_hashtags
 
+# Temporary in-memory session store (only for development/testing)
+session_store = {}
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -93,7 +96,7 @@ def like_post(post_id: int, db: Session = Depends(get_db), response: Response = 
     user_id = session_store[session_id]  # Get the user ID from session store
 
     # Check if the post already exists
-    post = crud.get_post_by_id(db, post_id)
+    post = crud.get_post(db, post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
 
@@ -119,7 +122,7 @@ def unlike_post(post_id: int, db: Session = Depends(get_db), response: Response 
     user_id = session_store[session_id]  # Get the user ID from session store
 
     # Check if the post exists
-    post = crud.get_post_by_id(db, post_id)
+    post = crud.get_post(db, post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
 
