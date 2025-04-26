@@ -57,11 +57,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Searchbar-button
+// Searchbar form (accessible and keyboard-friendly)
 document.addEventListener("DOMContentLoaded", () => {
-  const searchBtn = document.querySelector("#search-button");
-  if (searchBtn) {
-    searchBtn.addEventListener("click", searchPosts);
+  const searchForm = document.querySelector("#search-form");
+  if (searchForm) {
+    searchForm.addEventListener("submit", (e) => {
+      e.preventDefault(); // Prevent page reload
+      searchPosts();      // Run search
+    });
   }
 });
 
@@ -111,10 +114,19 @@ function searchPosts() {
   const query = document.querySelector("#search-input").value.trim();
   if (!query) return;
 
-  fetch(`${api}/posts/search/?query=${encodeURIComponent(query)}`)
-    .then((res) => res.json())
+  fetch(`${API_BASE_URL}/posts/search/?query=${encodeURIComponent(query)}`)
+    .then((res) => {
+      if (!res.ok) throw new Error("Search failed");
+      return res.json();
+    })
     .then((posts) => {
-      renderAllPosts(posts);
+      const postList = document.getElementById("post-list");
+      if (!postList) return;
+      renderPosts(posts, postList);
+    })
+    .catch((err) => {
+      console.error("Search error:", err);
+      alert("Search failed. Please try again.");
     });
 }
 
