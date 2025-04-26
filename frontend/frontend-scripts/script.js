@@ -6,11 +6,16 @@ const API_BASE_URL =
 // #######################
 // ### Event listeners ###
 // #######################
-// Login-button
+// Login-button/ Signup-button
 document.addEventListener("DOMContentLoaded", () => {
   const loginBtn = document.querySelector("#login-button");
   if (loginBtn) {
     loginBtn.addEventListener("click", login);
+  }
+
+  const signupBtn = document.querySelector("#signup-button");
+  if (signupBtn) {
+    signupBtn.addEventListener("click", signup);
   }
 });
 
@@ -115,20 +120,24 @@ function searchPosts() {
 
 // Sign up
 function signup() {
-  const username = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const username = document.querySelector("#username").value;
+  const email = document.querySelector("#email").value;
+  const password = document.querySelector("#password").value;
 
   fetch(`${API_BASE_URL}/users/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, email, password_hash: password }),
+    body: JSON.stringify({ name: username, email, password }),
   })
     .then((res) => res.json())
     .then((data) => {
-      const msg = document.getElementById("signup-message");
-      msg.textContent = data.message || data.detail || "Signup failed.";
-      msg.className = data.message ? "success" : "error";
+      const msg = document.querySelector("#signup-message");
+      const success = data.id && data.name;
+
+      msg.textContent = success
+        ? "Signup successful! You can now log in."
+        : data.detail || "Signup failed.";
+      msg.className = success ? "success" : "error";
     })
     .catch((err) => console.error("Signup error:", err));
 }
@@ -274,7 +283,7 @@ function renderPosts(posts, container) {
     likeBtn.addEventListener("click", async () => {
       const token = localStorage.getItem("token");
       const method = post.is_liked_by_user ? "DELETE" : "POST";
-      const url = `${API_BASE_URL}/posts/${post.id}/like`;
+      const url = `${API_BASE_URL}/posts/like/${post.id}`;
       
       try {
       const res = await fetch(url, {
