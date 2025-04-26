@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, joinedload
-from app.models.models import User, Post, Hashtag, likes_table as likes, post_hashtags
+from app.models.models import User, Post, Hashtag, likes, post_hashtags
 from sqlalchemy import or_
 import bcrypt
 
@@ -155,24 +155,6 @@ def delete_post(db: Session, post_id: int):
     db.delete(post)
     db.commit()
     return post
-
-## Likes for posts
-def toggle_like(db: Session, user_id: int, post_id: int):
-    user = db.query(User).get(user_id)
-    post = db.query(Post).get(post_id)
-
-    if not user or not post:
-        return None
-
-    if user in post.likes:
-        post.likes.remove(user)
-        liked = False
-    else:
-        post.likes.append(user)
-        liked = True
-
-    db.commit()
-    return {"liked": liked, "likes": len(post.likes)}
 
 def like_post(db: Session, user_id: int, post_id: int):
     # Insert a like into the likes table

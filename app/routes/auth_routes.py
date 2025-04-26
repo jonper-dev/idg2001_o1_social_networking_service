@@ -43,7 +43,9 @@ def login(response: Response, data: LoginInput, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
     session_id = str(uuid.uuid4())
-    create_session(session_id, user.id) # Save the session
     response.set_cookie(key="session_id", value=session_id, httponly=True, secure=True)
     
+    create_session(session_id, user.id)  # Save the session
+    
     return {"message": "Login successful", "user_id": user.id, "name": user.name}
+
