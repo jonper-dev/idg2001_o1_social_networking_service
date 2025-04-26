@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, joinedload
-from app.models.models import User, Post, Hashtag, likes_table as likes, post_hashtags
+from app.models.models import User, Post, Hashtag, likes, post_hashtags
 from sqlalchemy import or_
 import bcrypt
 
