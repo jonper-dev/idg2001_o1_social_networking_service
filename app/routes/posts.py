@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from app.db import get_db
 from app import crud
-from app.models.models import Post, PostCreate, PostUpdate, PostPatch, PostOutput, likes, post_hashtags
+from app.models.models import Post, PostCreate, PostUpdate, PostPatch, PostOutput
 from app.session import create_session, get_user_id, delete_session, session_store
 
 router = APIRouter(prefix="/posts", tags=["posts"])
@@ -16,13 +16,20 @@ router = APIRouter(prefix="/posts", tags=["posts"])
 @router.get("/", response_model=List[PostOutput])
 def get_posts(db: Session = Depends(get_db)):
     posts = crud.get_posts(db)
+    post = db.query(Post).options(joinedload(Post.likes)).filter(Post.id == post_id).first()
+    user = get_user_id
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found.")
+    is_liked = user in post.likes
     return [
         PostOutput(
             id=post.id,
             content=post.content,
             timestamp=post.created_at,
             user_id=post.user_id,
-            username=post.author.name ## From the table-join.
+            username=post.author.name, ## From the table-join.
+            likes=len(post.likes),
+            is_liked_by_user=is_liked
         )
         for post in posts
     ]
@@ -84,7 +91,6 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
 ##########################
 ### Like / Unlike Post ###
 ##########################
-
 def check_user_authenticated(request: Request):
     """Helper function to check if the user is authenticated using the session."""
     session_id = request.cookies.get("session_id")
@@ -94,19 +100,23 @@ def check_user_authenticated(request: Request):
 
 ## Like post
 @router.post("/like/{post_id}")
-def like_post(post_id: int, request: Request, db: Session = Depends(get_db)):
-    user_id = check_user_authenticated(request)  # Use the helper function
+def like_post(post_id: int, db: Session = Depends(get_db), user_id: int = Depends(get_user_id)):
+    return crud.toggle_like(db, user_id, post_id)
 
-    post = crud.get_post(db, post_id)
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
+# @router.post("/like/{post_id}")
+# def like_post(post_id: int, request: Request, db: Session = Depends(get_db)):
+#     user_id = check_user_authenticated(request)  # Use the helper function
 
-    if crud.is_post_liked_by_user(db, post_id, user_id):
-        raise HTTPException(status_code=400, detail="Already liked this post")
+#     post = crud.get_post(db, post_id)
+#     if not post:
+#         raise HTTPException(status_code=404, detail="Post not found")
 
-    crud.like_post(db, user_id, post_id)
+#     if crud.is_post_liked_by_user(db, post_id, user_id):
+#         raise HTTPException(status_code=400, detail="Already liked this post")
 
-    return JSONResponse(content={"message": "Post liked successfully"}, status_code=200)
+#     crud.like_post(db, user_id, post_id)
+
+#     return JSONResponse(content={"message": "Post liked successfully"}, status_code=200)
 
 ###############
 ### Unlike Post ###
