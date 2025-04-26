@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app import crud 
 from app.models.models import LoginInput, SignupInput
-from app.session import create_session, get_user_id, delete_session
+from app.session import create_session, get_user_id, delete_session, session_store
 import uuid
 router = APIRouter()
 

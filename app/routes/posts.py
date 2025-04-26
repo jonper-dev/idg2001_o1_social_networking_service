@@ -5,7 +5,7 @@ from typing import List
 from app.db import get_db
 from app import crud
 from app.models.models import Post, PostCreate, PostUpdate, PostPatch, PostOutput, likes, post_hashtags
-from app.session import create_session, get_user_id, delete_session
+from app.session import create_session, get_user_id, delete_session, session_store
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
