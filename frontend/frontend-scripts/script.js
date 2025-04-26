@@ -298,26 +298,28 @@ function renderPosts(posts, container) {
       const url = `${API_BASE_URL}/posts/like/${post.id}`;
       
       try {
-        res = await fetch(url, {
-          method: method,
-          credentials: "include", // Session-based cookies.
-        });
+      const res = await fetch(url, {
+        method: method,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        if (res.ok) {
-          post.is_liked_by_user = !post.is_liked_by_user;
-          post.likes += post.is_liked_by_user ? 1 : -1;
+      if (res.ok) {
+        post.is_liked_by_user = !post.is_liked_by_user;
+        post.likes += post.is_liked_by_user ? 1 : -1;
 
-          // Update like button display
-          likeBtn.innerHTML = post.is_liked_by_user ? "❤️" : "🤍";
-          likeCount.textContent = ` ${post.likes}`;
-          likeBtn.appendChild(likeCount);
-        } else {
-          alert("Failed to update like.");
-        }
-      } catch (err) {
-        console.error("Like button error:", err);
-        alert("Error with like button.");
+        // Update like button display
+        likeBtn.innerHTML = post.is_liked_by_user ? "❤️" : "🤍";
+        likeCount.textContent = ` ${post.likes}`;
+        likeBtn.appendChild(likeCount);
+      } else {
+        alert("Failed to update like.");
       }
+    } catch (err) {
+      console.error("Like button error:", err);
+      alert("Error with like button.");
+    }
     });
 
     postDiv.innerHTML = `
