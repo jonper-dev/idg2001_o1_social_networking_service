@@ -201,7 +201,7 @@ function login() {
 function logout() {
   fetch(`${API_BASE_URL}/auth/logout`, {
     method: "POST",
-    credentials: "include",  // ✅ Sends session_id cookie to backend
+    credentials: "include",  // Sends session_id cookie to backend.
   })
     .then((res) => res.json())
     .then((data) => {
