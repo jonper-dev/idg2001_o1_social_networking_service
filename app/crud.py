@@ -87,6 +87,9 @@ def follow_user(db: Session, follower_id: int, followed_id: int):
         db.commit()
     return follower
 
+## List all accounts
+def list_accounts(db: Session):
+    return db.query(User).all()
 
 
 ###################
@@ -185,6 +188,15 @@ def search_posts(db: Session, query: str):
         or_(
             Post.content.ilike(f"%{query}%"),
             Post.hashtags.any(Hashtag.name.ilike(f"%{query}%"))
+        )
+    ).all()
+
+## Search for accounts
+def search_accounts(db: Session, query: str):
+    return db.query(User).filter(
+        or_(
+            User.name.ilike(f"%{query}%"),
+            User.email.ilike(f"%{query}%")
         )
     ).all()
 
