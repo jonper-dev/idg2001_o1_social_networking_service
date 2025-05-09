@@ -87,6 +87,18 @@ def follow_user(db: Session, follower_id: int, followed_id: int):
         db.commit()
     return follower
 
+## List all accounts
+def list_accounts(db: Session):
+    return db.query(User).all()
+
+## Search for accounts
+def search_accounts(db: Session, query: str):
+    return db.query(User).filter(
+        or_(
+            User.name.ilike(f"%{query}%"),
+            User.email.ilike(f"%{query}%")
+        )
+    ).all()
 
 
 ###################
@@ -175,6 +187,17 @@ def is_post_liked_by_user(db: Session, post_id: int, user_id: int):
 ## Reply to post
 def reply_to_post(db: Session, user_id: int, content: str, parent_id: int):
     return create_post(db, user_id=user_id, content=content, reply_to_id=parent_id)
+
+## Edit a tweet
+def edit_post(db: Session, post_id: int, content: str):
+    post = db.query(Post).filter(Post.id == post_id).first()
+    if not post:
+        return None
+    post.content = content
+    post.edited = True  # Mark as edited
+    db.commit()
+    db.refresh(post)
+    return post
 
 ####################
 ### -- SEARCH -- ###
