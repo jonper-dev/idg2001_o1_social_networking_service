@@ -40,6 +40,12 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 ###########################
 ### -- Other methods -- ###
 ###########################
+
+## Helper function for veryfying posts
+def verify_ownership(post, user_id):
+    if post.user_id != user_id:
+        raise HTTPException(status_code=403, detail="Not authorized.")
+
 ## Creating a new post (or comment-post). A new post-ID will be assigned.
 @router.post("/")
 def create_post(post_data: PostCreate, db: Session = Depends(get_db)):
@@ -51,34 +57,43 @@ def create_post(post_data: PostCreate, db: Session = Depends(get_db)):
 
 ## Updating a post.
 @router.put("/{post_id}")
-def update_post(post_id: int, updated: PostUpdate, db: Session = Depends(get_db)):
-    post = crud.update_post(db, post_id, updated.content)
+def update_post(post_id: int, updated: PostUpdate, request: Request, db: Session = Depends(get_db)):
+    user_id = check_user_authenticated(request)
+    post = crud.get_post(db, post_id, updated.content)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found.")
-    return post
 
+    ## Verify ownership using helper function 
+    verify_ownership(post, user_id)
+    return crud.update_post(db, post_id, updated.content)
 
 ## Partial update of a post. Only the fields that are provided will be updated.
 @router.patch("/{post_id}")
-def partial_update_post(post_id: int, post_update: PostPatch, db: Session = Depends(get_db)):
+def partial_update_post(post_id: int, post_update: PostPatch, request: Request, db: Session = Depends(get_db)):
+    user_id = check_user_authenticated(request)
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found.")
-    ## Find a proper way to check for currently logged in user later.
-    # if post.user_id != current_user["id"]:
-    #     raise HTTPException(status_code=403, detail="Not authorized to edit this post.")
     
-    post.content = post_update.content
-    db.commit()
-    db.refresh(post)
+    ## Verify ownership helper function
+    verify_ownership(post, user_id)
+    if post_update.content is not None:
+        post.content = post_update.content
+        db.commit()
+        db.refresh(post)
+
     return post
 
 ## Delete post
 @router.delete("/{post_id}")
-def delete_post(post_id: int, db: Session = Depends(get_db)):
-    deleted = crud.delete_post(db, post_id)
-    if not deleted:
+def delete_post(post_id: int, request: Request, db: Session = Depends(get_db)):
+    user_id = check_user_authenticated(request)
+    post = crud.get_post(db, post_id)
+    if not post:
         raise HTTPException(status_code=404, detail="Post not found.")
+    
+    verify_ownership(post, user_id)
+    crud.delete_post(db, post_id)
     return {"message": "Post deleted."}
 
 ##########################
@@ -93,7 +108,7 @@ def check_user_authenticated(request: Request):
     return get_user_id(session_id)
 
 ## Like post
-@router.post("/like/{post_id}")
+@router.post("/{post_id}/like")
 def like_post(post_id: int, request: Request, db: Session = Depends(get_db)):
     user_id = check_user_authenticated(request)  # Use the helper function
 
@@ -108,10 +123,8 @@ def like_post(post_id: int, request: Request, db: Session = Depends(get_db)):
 
     return JSONResponse(content={"message": "Post liked successfully"}, status_code=200)
 
-###############
-### Unlike Post ###
-###############
-@router.post("/unlike/{post_id}")
+## Unlike Post
+@router.post("/{post_id}/unlike")
 def unlike_post(post_id: int, request: Request, db: Session = Depends(get_db)):
     user_id = check_user_authenticated(request)  # Use the helper function
 
