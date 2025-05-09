@@ -19,7 +19,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 def signup(data: SignupInput, db: Session = Depends(get_db)):
     existing_user = crud.get_user_by_email(db, data.email)
     if existing_user:
-        raise HTTPException(status_code=400, detail="User already exists")
+        raise HTTPException(status_code=400, detail="User already exists.")
 
     new_user = crud.create_user(db, data.username, data.email, data.password)
     return {

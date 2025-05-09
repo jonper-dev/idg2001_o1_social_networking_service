@@ -159,7 +159,7 @@ function login() {
   const email = document.querySelector("#login-email").value;
   const password = document.querySelector("#login-password").value;
 
-  fetch(`${API_BASE_URL}/login/`, {
+  fetch(`${API_BASE_URL}/auth/login/`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -167,7 +167,7 @@ function login() {
   })
     .then((res) => {
       if (!res.ok) {
-        throw new Error("Login failed");
+        throw new Error("Login failed.");
       }
       return res.json();
     })
@@ -199,13 +199,24 @@ function login() {
 
 // Logout
 function logout() {
-  // Only removing user-related data, not others (like lightmode/darkmode-setting).
-  localStorage.removeItem("user_id");
-  localStorage.removeItem("user_name");
-  console.log("User logged out.");
+  fetch(`${API_BASE_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include",  // Sends session_id cookie to backend.
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("Logout response:", data.message);
+      // Only removing user-related data, not others (like lightmode/darkmode-setting).
+      localStorage.removeItem("user_id");
+      localStorage.removeItem("user_name");
 
-  sessionStorage.setItem("logoutMessage", "You have been logged out.");
-  location.reload();
+      sessionStorage.setItem("logoutMessage", "You have been logged out.");
+      location.reload();
+    })
+    .catch((err) => {
+      console.error("Logout error:", err);
+      alert("Logout failed.");
+    });
 }
 
 // Post a Cheep (Cheep a post? Cheep something?)
@@ -295,7 +306,7 @@ function renderPosts(posts, container) {
     likeBtn.addEventListener("click", async () => {
       const token = localStorage.getItem("token");
       const method = post.is_liked_by_user ? "DELETE" : "POST";
-      const url = `${API_BASE_URL}/posts/like/${post.id}`;
+      const url = `${API_BASE_URL}/posts/${post.id}/like`;
       
       try {
         res = await fetch(url, {
