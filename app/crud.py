@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, joinedload
-from app.models.models import User, Post, Hashtag, likes, post_hashtags
+from app.models.models import User, Post, Hashtag, likes_table as likes, post_hashtags
 from sqlalchemy import or_
 import bcrypt
 
@@ -87,6 +87,9 @@ def follow_user(db: Session, follower_id: int, followed_id: int):
         db.commit()
     return follower
 
+## List all accounts
+def list_accounts(db: Session):
+    return db.query(User).all()
 
 
 ###################
@@ -156,6 +159,24 @@ def delete_post(db: Session, post_id: int):
     db.commit()
     return post
 
+## Likes for posts
+def toggle_like(db: Session, user_id: int, post_id: int):
+    user = db.query(User).get(user_id)
+    post = db.query(Post).get(post_id)
+
+    if not user or not post:
+        return None
+
+    if user in post.likes:
+        post.likes.remove(user)
+        liked = False
+    else:
+        post.likes.append(user)
+        liked = True
+
+    db.commit()
+    return {"liked": liked, "likes": len(post.likes)}
+
 def like_post(db: Session, user_id: int, post_id: int):
     # Insert a like into the likes table
     new_like = likes.insert().values(user_id=user_id, post_id=post_id)
@@ -185,6 +206,15 @@ def search_posts(db: Session, query: str):
         or_(
             Post.content.ilike(f"%{query}%"),
             Post.hashtags.any(Hashtag.name.ilike(f"%{query}%"))
+        )
+    ).all()
+
+## Search for accounts
+def search_accounts(db: Session, query: str):
+    return db.query(User).filter(
+        or_(
+            User.name.ilike(f"%{query}%"),
+            User.email.ilike(f"%{query}%")
         )
     ).all()
 

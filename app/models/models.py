@@ -15,11 +15,11 @@ followers = Table(
 )
 
 ## Many-to-many relationship for likes
-likes = Table(
+likes_table = Table(
     'likes',
     Base.metadata,
-    Column('user_id', Integer, ForeignKey('users.id')),
-    Column('post_id', Integer, ForeignKey('posts.id'))
+    Column('user_id', ForeignKey('users.id'), primary_key=True),
+    Column('post_id', ForeignKey('posts.id'), primary_key=True)
 )
 
 ## Many-to-many for hashtags
@@ -37,6 +37,8 @@ class User(Base):
     email = Column(String(100), unique=True)
     password = Column(String(100))
     posts = relationship("Post", back_populates="author")
+
+    liked_posts = relationship("Post", secondary=likes_table, back_populates="likes")
     following = relationship(
         "User",
         secondary=followers,
@@ -55,7 +57,7 @@ class Post(Base):
     reply_to_id = Column(Integer, ForeignKey('posts.id'), nullable=True)
 
     author = relationship("User", back_populates="posts")
-    likes = relationship("User", secondary=likes, backref="liked_posts")
+    likes = relationship("User", secondary=likes_table, back_populates="liked_posts")
     hashtags = relationship("Hashtag", secondary=post_hashtags, back_populates="posts")
     replies = relationship("Post", remote_side=[id], backref="parent")
 
@@ -122,6 +124,8 @@ class PostOutput(BaseModel):
     timestamp: datetime
     user_id: int
     username: str
+    likes: int
+    is_liked_by_user: bool
 
     class Config:
         orm_mode = True
