@@ -4,30 +4,16 @@ from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 from app.db import get_db
 from app import crud
+from app.dependencies.auth import get_current_user_id, get_optional_user_id
 from app.models.models import Post, PostCreate, PostUpdate, PostPatch, PostOutput
-from app.session import get_user_id as lookup_user_id, session_store
+from app.session import session_store
+## Note that directories are separated by a dot (.) and not a slash (/).
 
-
-router = APIRouter(prefix="/posts", tags=["posts"])
+router = APIRouter()
 
 #########################
 ### -- GET-methods -- ###
 #########################
-## Finding current user if applicable for posts
-def get_current_user_id(session_id: str = Cookie(None)) -> int:
-    if not session_id:
-        raise HTTPException(status_code=401, detail="Not logged in.")
-    user_id = lookup_user_id(session_id)
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Not authenticated.")
-    return user_id
-
-## Finding current user without requiring login.
-def get_optional_user_id(session_id: str = Cookie(None)) -> Optional[int]:
-    if not session_id:
-        return None
-    return lookup_user_id(session_id)
-
 ## Getting all posts (and comment-posts), also used for showing posts.
 @router.get("/", response_model=List[PostOutput])
 def get_posts(
@@ -143,7 +129,7 @@ def check_user_authenticated(request: Request):
     ### Helper function to check if the user is authenticated using the session.
     session_id = request.cookies.get("session_id")
     if not session_id or session_id not in session_store:
-        raise HTTPException(status_code=401, detail="User not authenticated")
+        raise HTTPException(status_code=401, detail="User not authenticated.")
     return get_current_user_id(session_id)
 
 ## Like post
