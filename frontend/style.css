@@ -162,7 +162,8 @@ main header {
 main #login,
 main #signup,
 main #post-box,
-main #posts {
+main #posts,
+main .user-profile__my-posts {
   background-color: #f2f2f2;
   padding: 25px;
   border-radius: 10px;
@@ -178,19 +179,22 @@ main #posts {
 main #login h2,
 main #signup h2,
 main #post-box h2,
-main #posts h2 {
+main #posts h2,
+main .user-profile__my-posts h2 {
   margin-bottom: 20px;
 }
 main #login button,
 main #signup button,
 main #post-box button,
-main #posts button {
+main #posts button,
+main .user-profile__my-posts button {
   margin-top: 10px;
 }
 main #login p,
 main #signup p,
 main #post-box p,
-main #posts p {
+main #posts p,
+main .user-profile__my-posts p {
   margin-top: 10px;
   font-size: 0.9rem;
 }
@@ -204,6 +208,22 @@ main #posts #post-list .post {
   margin-bottom: 10px;
   border: 1px solid #ddd;
   text-align: left;
+}
+
+.user-profile {
+  display: flex;
+  justify-content: space-between;
+  align-items: top;
+  padding: 5%;
+}
+.user-profile__info {
+  padding: 10%;
+}
+.user-profile__info__username {
+  color: #000;
+}
+.user-profile__my-posts {
+  min-width: 50%;
 }
 
 .success {

@@ -3,11 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cheeper</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="icon" href="assets/cheeper-logo-blue-gradient.svg" />
-    <script src="frontend-scripts/script.js" type="module" defer></script>
-    <script src="frontend-scripts/profile.js" type= "module" defer></script>
+    <title>Profile</title>
+    <script
+      src="/frontend/frontend-scripts/profile.js"
+      type="module"
+      defer
+    ></script>
+    <link rel="stylesheet" href="/frontend/style.css" />
   </head>
   <body>
     <header>
@@ -23,8 +25,10 @@
         <form id="search-form" role="search">
           <label for="search-input" class="sr-only">Search posts</label>
           <input type="text" id="search-input" placeholder="Search posts..." />
-          <button type="submit" id="search-button" aria-label="Search posts">🔍</button>
-        </form>               
+          <button type="submit" id="search-button" aria-label="Search posts">
+            🔍
+          </button>
+        </form>
         <button class="menu-toggle" id="menu-toggle">&#9776;</button>
         <ul class="nav-links" id="nav-links">
           <li><button id="dark-toggle">🌙</button></li>
@@ -33,24 +37,17 @@
         </ul>
       </nav>
     </header>
-    <main>
-      <section id="welcome-banner">
-        <p id="welcome-message"></p>
-      </section>
-      <!-- Post -->
-      <div id="post-box">
-        <h2>Post a Cheep</h2>
-        <textarea id="post-content" placeholder="What's happening?"></textarea>
-        <button id="post-button">Post</button>
-        <p id="post-message" class="error"></p>
-      </div>
 
-      <!-- Post Feed -->
-      <div id="posts">
-        <h2>Latest Posts</h2>
-        <div id="post-list"></div>
+    <div class="user-profile">
+      <div class="user-profile__info">
+        <img class="user-profile__info__user-image" />
+        <h2 class="user-profile__info__username"></h2>
       </div>
-    </main>
+      <div class="user-profile__my-posts">
+        <h2 class="user-profile__my-posts__header">My Posts</h2>
+        <div class="user-profile__my-posts__list"></div>
+      </div>
+    </div>
     <footer>
       <button id="auth-button">Log Out</button>
       <p id="auth-message" class="auth-message"></p>

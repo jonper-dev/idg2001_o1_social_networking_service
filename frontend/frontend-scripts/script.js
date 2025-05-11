@@ -1,7 +1,12 @@
 import { getCachedPosts, cachePosts } from "./local-caching.js";
 
 const API_BASE_URL =
-  "https://idg2001-o1-social-networking-service.onrender.com";
+  // RENDER:
+  // "https://idg2001-o1-social-networking-service.onrender.com";
+
+  // LOCAL:
+  "http://127.0.0.1:8000";
+
 
 // #######################
 // ### Event listeners ###
@@ -63,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (searchForm) {
     searchForm.addEventListener("submit", (e) => {
       e.preventDefault(); // Prevent page reload
-      searchPosts();      // Run search
+      searchPosts(); // Run search
     });
   }
 });
@@ -75,9 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
     postBtn.addEventListener("click", postPost);
   }
 });
-
-
-
 
 // ########################
 // ### Global variables ###
@@ -156,6 +158,7 @@ function signup() {
 
 // Login
 function login() {
+  console.log("Login function triggered");
   const email = document.querySelector("#login-email").value;
   const password = document.querySelector("#login-password").value;
 
@@ -201,7 +204,7 @@ function login() {
 function logout() {
   fetch(`${API_BASE_URL}/auth/logout`, {
     method: "POST",
-    credentials: "include",  // Sends session_id cookie to backend.
+    credentials: "include", // Sends session_id cookie to backend.
   })
     .then((res) => res.json())
     .then((data) => {
@@ -238,10 +241,12 @@ function postPost() {
     .then((data) => {
       const msg = document.querySelector("#post-message");
       const success = data.id && data.content;
-    
-      msg.textContent = success ? "Post created successfully!" : data.detail || "Post failed.";
+
+      msg.textContent = success
+        ? "Post created successfully!"
+        : data.detail || "Post failed.";
       msg.className = success ? "success" : "error";
-    
+
       if (success) {
         document.querySelector("#post-content").value = "";
         loadPosts(); // Refresh the post list.
@@ -307,7 +312,7 @@ function renderPosts(posts, container) {
       const token = localStorage.getItem("token");
       const method = post.is_liked_by_user ? "DELETE" : "POST";
       const url = `${API_BASE_URL}/posts/${post.id}/like`;
-      
+
       try {
         res = await fetch(url, {
           method: method,
@@ -341,7 +346,7 @@ function renderPosts(posts, container) {
 
     container.appendChild(postDiv);
   });
-};
+}
 
 // Load posts on startup
 window.onload = loadPosts;

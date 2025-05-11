@@ -199,7 +199,8 @@ main {
   #login,
   #signup,
   #post-box,
-  #posts {
+  #posts,
+  .user-profile__my-posts {
     background-color: $light-bg;
     padding: 25px;
     border-radius: 10px;
@@ -239,6 +240,25 @@ main {
         text-align: left;
       }
     }
+  }
+}
+
+.user-profile {
+  display: flex;
+  justify-content: space-between;
+  align-items: top;
+  padding: 5%;
+
+  &__info {
+    padding: 10%;
+
+    &__username {
+      color: #000;
+    }
+  }
+
+  &__my-posts {
+    min-width: 50%;
   }
 }
 
