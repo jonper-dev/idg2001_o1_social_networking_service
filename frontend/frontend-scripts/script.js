@@ -1,11 +1,9 @@
 import { getCachedPosts, cachePosts } from "./local-caching.js";
 
 const API_BASE_URL =
-  // RENDER:
-  // "https://idg2001-o1-social-networking-service.onrender.com";
-
-  // LOCAL:
-  "http://127.0.0.1:8000";
+  
+  // "https://idg2001-o1-social-networking-service.onrender.com"; // RENDER
+  "http://127.0.0.1:8000"; // LOCAL
 
 
 // #######################
