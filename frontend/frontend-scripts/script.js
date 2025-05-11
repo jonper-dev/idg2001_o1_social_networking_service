@@ -2,8 +2,8 @@ import { getCachedPosts, cachePosts } from "./local-caching.js";
 
 const API_BASE_URL =
   
-  // "https://idg2001-o1-social-networking-service.onrender.com"; // RENDER
-  "http://127.0.0.1:8000"; // LOCAL
+  // "https://idg2001-o1-social-networking-service.onrender.com"; // RENDER:
+  "http://127.0.0.1:8000"; // LOCAL:
 
 
 // #######################
@@ -69,6 +69,36 @@ document.addEventListener("DOMContentLoaded", () => {
       searchPosts(); // Run search
     });
   }
+});
+
+/////////////////////////////
+// Navbar User Toggle //
+///////////////////////////
+window.addEventListener("DOMContentLoaded", () => {
+  const authLink = document.getElementById("auth-link"); 
+
+  fetch(`${API_BASE_URL}/auth/profile`, {
+    credentials: "include", // sends the session_id cookie
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("Not logged in");
+      return res.json();
+    })
+    .then((data) => {
+      authLink.href = `/frontend/profile.html?user_id=${data.user_id}`;
+      authLink.innerHTML = `
+      <img src="assets/profile-icon.svg" 
+      alt="Profile Icon" 
+      style="width: 25px; vertical-align: middle; margin-right: 6px;"> 
+      Profile
+      `;
+    })
+    .catch((err) => {
+      // Not logged in — leave as Login
+      console.warn("User not logged in or profile fetch failed:", err);
+      authLink.href = "/frontend/login_signup.html";
+      authLink.textContent = "Login";
+    });
 });
 
 // Post-button

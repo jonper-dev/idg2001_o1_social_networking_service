@@ -50,8 +50,6 @@ async function displayUserInfo() {
 
     userImage.src = "/frontend/assets/profile-icon-blue.svg";
     userImage.alt = "Profile image";
-    userImage.style.width = "80px";
-    userImage.style.borderRadius = "50%";
 
     
     userName.textContent = data.username || "Unnamed user";
@@ -63,3 +61,14 @@ async function displayUserInfo() {
 ////////////////////
 // Profile Posts //
 //////////////////
+
+// async function loadPosts() {
+//   
+// Code for displaying, editing and deleting posts
+//
+// }
+
+window.addEventListener("DOMContentLoaded", () => {
+  displayUserInfo();
+  // loadPosts();
+});

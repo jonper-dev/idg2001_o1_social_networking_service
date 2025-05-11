@@ -5,7 +5,8 @@ body {
   background-color: #fff;
   color: #000;
 }
-body h1, body h2 {
+body h1,
+body h2 {
   color: #1DA1F2;
 }
 body .sr-only {
@@ -162,8 +163,7 @@ main header {
 main #login,
 main #signup,
 main #post-box,
-main #posts,
-main .user-profile__my-posts {
+main #posts {
   background-color: #f2f2f2;
   padding: 25px;
   border-radius: 10px;
@@ -179,22 +179,19 @@ main .user-profile__my-posts {
 main #login h2,
 main #signup h2,
 main #post-box h2,
-main #posts h2,
-main .user-profile__my-posts h2 {
+main #posts h2 {
   margin-bottom: 20px;
 }
 main #login button,
 main #signup button,
 main #post-box button,
-main #posts button,
-main .user-profile__my-posts button {
+main #posts button {
   margin-top: 10px;
 }
 main #login p,
 main #signup p,
 main #post-box p,
-main #posts p,
-main .user-profile__my-posts p {
+main #posts p {
   margin-top: 10px;
   font-size: 0.9rem;
 }
@@ -214,12 +211,19 @@ main #posts #post-list .post {
   display: flex;
   justify-content: space-between;
   align-items: top;
-  padding: 5%;
+  padding: 1%;
 }
 .user-profile__info {
+  margin: 5%;
+}
+.user-profile__info__user-image {
+  box-sizing: border-box;
+  width: 100%;
   padding: 10%;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 .user-profile__info__username {
+  width: auto;
   color: #000;
 }
 .user-profile__my-posts {
