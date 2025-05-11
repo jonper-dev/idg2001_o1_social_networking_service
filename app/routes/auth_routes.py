@@ -10,8 +10,9 @@ from app.models.models import LoginInput, SignupInput
 from app.session import create_session, get_user_id, delete_session, session_store
 import uuid
 import traceback
+## Note that directories are separated by a dot (.) and not a slash (/).
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter()
 
 ###############
 ### Signup  ###
