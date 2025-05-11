@@ -1,11 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
+from typing import List, Optional
 from app.db import get_db
 from app import crud
-from app.models.models import UserCreate, UserUpdate, UserPatch
-### Note that directories are separated by a dot (.) and not a slash (/).
+from app.dependencies.auth import get_optional_user_id
+from app.models.models import Post, PostOutput, UserCreate, UserUpdate, UserPatch
+## Note that directories are separated by a dot (.) and not a slash (/).
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter()
 
 #########################
 ### -- GET-methods -- ###
@@ -22,6 +24,33 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found.")
     return user
+
+## Getting all posts by a specific user.
+@router.get("/{user_id}/posts", response_model=List[PostOutput])
+def get_user_posts(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user_id: Optional[int] = Depends(get_optional_user_id)
+):
+    posts = (
+        db.query(Post)
+        .options(joinedload(Post.author), joinedload(Post.likes))
+        .filter(Post.user_id == user_id)
+        .all()
+    )
+
+    return [
+        PostOutput(
+            id=post.id,
+            content=post.content,
+            timestamp=post.created_at,
+            user_id=post.user_id,
+            username=post.author.name,
+            likes=len(post.likes),
+            is_liked_by_user=any(user.id == current_user_id for user in post.likes) if current_user_id else False
+        )
+        for post in posts
+    ]
 
 
 
