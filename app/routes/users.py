@@ -4,7 +4,8 @@ from typing import List, Optional
 from app.db import get_db
 from app import crud
 from app.dependencies.auth import get_optional_user_id
-from app.models.models import Post, PostOutput, UserCreate, UserUpdate, UserPatch
+from app.models.models import Post
+from app.schemas.schemas import PostOutput, UserCreate, UserUpdate, UserPatch
 ## Note that directories are separated by a dot (.) and not a slash (/).
 
 router = APIRouter()
@@ -25,7 +26,7 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found.")
     return user
 
-## Getting all posts by a specific user.
+## Getting all posts by a specific user
 @router.get("/{user_id}/posts", response_model=List[PostOutput])
 def get_user_posts(
     user_id: int,

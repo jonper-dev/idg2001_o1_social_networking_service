@@ -92,15 +92,17 @@ def list_accounts(db: Session, skip: int = 0, limit: int = 100):
 ###################
 ### -- POSTS -- ###
 ###################
-def create_post(db: Session, post_data):
-    from app.models.models import Post, Hashtag  # Avoid circular imports
+def create_post(
+        db: Session, 
+        post_data,
+        user_id: int):
 
     if not post_data.content or not post_data.user_id:
-        raise ValueError("Post content and user_id are required.")  # Validate input
+        raise ValueError("Post content is required.")  # Validate input
 
     post = Post(
         content=post_data.content,
-        user_id=post_data.user_id,
+        user_id=user_id,
         reply_to_id=post_data.reply_to_id
     )
 

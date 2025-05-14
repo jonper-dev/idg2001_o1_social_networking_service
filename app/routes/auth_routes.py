@@ -99,29 +99,3 @@ def get_current_user(session_id: str = Cookie(None), db: Session = Depends(get_d
     authenticated=True,
     user=UserPublic.model_validate(user)
 )
-
-@router.get("/me/posts")
-def get_my_posts(
-    session_id: str = Cookie(None),
-    db: Session = Depends(get_db),
-):
-    if not session_id:
-        raise HTTPException(status_code=401, detail="Not authenticated.")
-    
-    user_id = get_user_id(session_id)
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Invalid session")
-
-    
-    try:
-        posts = (
-            db.query(Post)
-            .options(joinedload(Post.author), joinedload(Post.likes))
-            .filter(Post.user_id == user_id)
-            .all()
-        )
-        return posts
-    except Exception as e:
-        print("Error fetching posts:", e)
-        traceback.print_exec()
-        raise HTTPException(status_code=500, detail="Failed to fetch posts.")
