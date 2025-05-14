@@ -1,7 +1,6 @@
 import { getCachedPosts, cachePosts } from "./shared.js";
 
 const API_BASE_URL =
-  
   // "https://idg2001-o1-social-networking-service.onrender.com"; // RENDER:
   "http://127.0.0.1:8000"; // LOCAL:
 
@@ -107,31 +106,43 @@ function renderPosts(posts, container) {
 
     // Create like count
     const likeCount = document.createElement("span");
-    likeCount.textContent = ` ${post.likes}`;
+    const cachedLikes = localStorage.getItem(`post_${post.id}_likes`);
+    const displayLikes = cachedLikes ? parseInt(cachedLikes) : post.likes;
+    likeCount.textContent = ` ${displayLikes}`;
+
     likeBtn.appendChild(likeCount);
 
     // Like/unlike logic
     likeBtn.addEventListener("click", async () => {
-      const token = localStorage.getItem("token");
-      const method = post.is_liked_by_user ? "DELETE" : "POST";
-      const url = `${API_BASE_URL}/posts/${post.id}/like`;
+      const isLiking = !post.is_liked_by_user;
+      const url = `${API_BASE_URL}/posts/${post.id}/${
+        isLiking ? "like" : "unlike"
+      }`;
 
       try {
-        res = await fetch(url, {
-          method: method,
-          credentials: "include", // Session-based cookies.
+        const res = await fetch(url, {
+          method: "POST",
+          credentials: "include",
         });
 
         if (res.ok) {
-          post.is_liked_by_user = !post.is_liked_by_user;
-          post.likes += post.is_liked_by_user ? 1 : -1;
+          post.is_liked_by_user = isLiking;
+          post.likes += isLiking ? 1 : -1;
 
-          // Update like button display
+          // Update UI
           likeBtn.innerHTML = post.is_liked_by_user ? "❤️" : "🤍";
           likeCount.textContent = ` ${post.likes}`;
           likeBtn.appendChild(likeCount);
+
+          // Cache like count if it's large
+          if (post.likes > 100) {
+            localStorage.setItem(`post_${post.id}_likes`, post.likes);
+          } else {
+            localStorage.removeItem(`post_${post.id}_likes`);
+          }
         } else {
-          alert("Failed to update like.");
+          const err = await res.json();
+          alert(err.detail || "Failed to update like.");
         }
       } catch (err) {
         console.error("Like button error:", err);
