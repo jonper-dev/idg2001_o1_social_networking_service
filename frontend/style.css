@@ -5,7 +5,8 @@ body {
   background-color: #fff;
   color: #000;
 }
-body h1, body h2 {
+body h1,
+body h2 {
   color: #1DA1F2;
 }
 body .sr-only {
@@ -204,6 +205,29 @@ main #posts #post-list .post {
   margin-bottom: 10px;
   border: 1px solid #ddd;
   text-align: left;
+}
+
+.user-profile {
+  display: flex;
+  justify-content: space-between;
+  align-items: top;
+  padding: 1%;
+}
+.user-profile__info {
+  margin: 5%;
+}
+.user-profile__info__user-image {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10%;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+.user-profile__info__username {
+  width: auto;
+  color: #000;
+}
+.user-profile__my-posts {
+  min-width: 50%;
 }
 
 .success {

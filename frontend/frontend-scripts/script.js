@@ -1,7 +1,10 @@
 import { getCachedPosts, cachePosts } from "./local-caching.js";
 
 const API_BASE_URL =
-  "https://idg2001-o1-social-networking-service.onrender.com";
+  
+  // "https://idg2001-o1-social-networking-service.onrender.com"; // RENDER:
+  "http://127.0.0.1:8000"; // LOCAL:
+
 
 // #######################
 // ### Event listeners ###
@@ -63,9 +66,39 @@ document.addEventListener("DOMContentLoaded", () => {
   if (searchForm) {
     searchForm.addEventListener("submit", (e) => {
       e.preventDefault(); // Prevent page reload
-      searchPosts();      // Run search
+      searchPosts(); // Run search
     });
   }
+});
+
+/////////////////////////////
+// Navbar User Toggle //
+///////////////////////////
+window.addEventListener("DOMContentLoaded", () => {
+  const authLink = document.getElementById("auth-link"); 
+
+  fetch(`${API_BASE_URL}/auth/profile`, {
+    credentials: "include", // sends the session_id cookie
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("Not logged in");
+      return res.json();
+    })
+    .then((data) => {
+      authLink.href = `/frontend/profile.html?user_id=${data.user_id}`;
+      authLink.innerHTML = `
+      <img src="assets/profile-icon.svg" 
+      alt="Profile Icon" 
+      style="width: 25px; vertical-align: middle; margin-right: 6px;"> 
+      Profile
+      `;
+    })
+    .catch((err) => {
+      // Not logged in — leave as Login
+      console.warn("User not logged in or profile fetch failed:", err);
+      authLink.href = "/frontend/login_signup.html";
+      authLink.textContent = "Login";
+    });
 });
 
 // Post-button
@@ -75,9 +108,6 @@ document.addEventListener("DOMContentLoaded", () => {
     postBtn.addEventListener("click", postPost);
   }
 });
-
-
-
 
 // ########################
 // ### Global variables ###
@@ -190,6 +220,7 @@ function signup() {
 
 // Login
 function login() {
+  console.log("Login function triggered");
   const email = document.querySelector("#login-email").value;
   const password = document.querySelector("#login-password").value;
 
@@ -235,7 +266,7 @@ function login() {
 function logout() {
   fetch(`${API_BASE_URL}/auth/logout`, {
     method: "POST",
-    credentials: "include",  // Sends session_id cookie to backend.
+    credentials: "include", // Sends session_id cookie to backend.
   })
     .then((res) => res.json())
     .then((data) => {
@@ -272,10 +303,12 @@ function postPost() {
     .then((data) => {
       const msg = document.querySelector("#post-message");
       const success = data.id && data.content;
-    
-      msg.textContent = success ? "Post created successfully!" : data.detail || "Post failed.";
+
+      msg.textContent = success
+        ? "Post created successfully!"
+        : data.detail || "Post failed.";
       msg.className = success ? "success" : "error";
-    
+
       if (success) {
         document.querySelector("#post-content").value = "";
         loadPosts(); // Refresh the post list.
@@ -341,7 +374,7 @@ function renderPosts(posts, container) {
       const token = localStorage.getItem("token");
       const method = post.is_liked_by_user ? "DELETE" : "POST";
       const url = `${API_BASE_URL}/posts/${post.id}/like`;
-      
+
       try {
         res = await fetch(url, {
           method: method,
@@ -375,7 +408,7 @@ function renderPosts(posts, container) {
 
     container.appendChild(postDiv);
   });
-};
+}
 
 // Load posts on startup
 window.onload = loadPosts;

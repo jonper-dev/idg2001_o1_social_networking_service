@@ -17,7 +17,8 @@ body {
   background-color: $white;
   color: #000;
 
-  h1, h2 {
+  h1,
+  h2 {
     color: $primary-color;
   }
 
@@ -31,7 +32,7 @@ body {
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
-  }  
+  }
 
   input,
   textarea {
@@ -50,9 +51,10 @@ body {
     cursor: pointer;
     transition: transform 0.2s ease;
   }
+
   .like-btn:hover {
     transform: scale(1.2);
-  }  
+  }
 
   button {
     padding: 10px 15px;
@@ -105,7 +107,7 @@ header {
       display: flex;
       justify-content: center;
       margin: 1rem;
-    
+
       input {
         padding: 0.5rem;
         width: 300px;
@@ -113,7 +115,7 @@ header {
         border: 1px solid #ccc;
         margin-right: 0.5rem;
       }
-    
+
       button {
         padding: 0.5rem 1rem;
         border: none;
@@ -121,12 +123,12 @@ header {
         color: white;
         border-radius: 8px;
         cursor: pointer;
-    
+
         &:hover {
           background-color: #0056b3;
         }
       }
-    }    
+    }
 
     .menu-toggle {
       font-size: 1.5rem;
@@ -194,7 +196,7 @@ main {
     position: sticky;
     top: 0;
     z-index: 10;
-  }  
+  }
 
   #login,
   #signup,
@@ -242,12 +244,39 @@ main {
   }
 }
 
+.user-profile {
+  display: flex;
+  justify-content: space-between;
+  align-items: top;
+  padding: 1%;
+
+  &__info {
+    margin: 5%;
+
+    &__user-image {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 10%;
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    }
+
+    &__username {
+      width: auto;
+      color: #000;
+    }
+  }
+
+  &__my-posts {
+    min-width: 50%;
+  }
+}
+
 // ===============================
 // MESSAGES / FEEDBACK STYLES
 // ===============================
 .success {
-    color: green;
-    font-weight: bold;
+  color: green;
+  font-weight: bold;
 }
 
 .error {
@@ -265,51 +294,51 @@ main {
 // DARK MODE
 // ===============================
 body.dark {
-    background-color: #000000;
+  background-color: #000000;
+  color: #e0e0e0;
+
+  input,
+  textarea {
+    background-color: #1e1e1e;
     color: #e0e0e0;
-  
-    input,
-    textarea {
-      background-color: #1e1e1e;
-      color: #e0e0e0;
-      border: 1px solid #333;
+    border: 1px solid #333;
+  }
+
+  button {
+    background-color: #262626;
+    color: #e0e0e0;
+
+    &:hover {
+      background-color: #555;
     }
-  
-    button {
-      background-color: #262626;
+  }
+
+  header {
+    background-color: #2e2e2e;
+
+    .logo__text {
       color: #e0e0e0;
-  
+    }
+
+    .nav-links li a {
+      color: #e0e0e0;
+
       &:hover {
-        background-color: #555;
+        background-color: rgba(255, 255, 255, 0.1);
       }
     }
-  
-    header {
-      background-color: #2e2e2e;
-  
-      .logo__text {
-        color: #e0e0e0;
-      }
-  
-      .nav-links li a {
-        color: #e0e0e0;
-  
-        &:hover {
-          background-color: rgba(255, 255, 255, 0.1);
-        }
-      }
-    }
-  
-    main #login,
-    main #signup,
-    main #post-box,
-    main #posts {
-      background-color: #2e2e2e;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    }
-  
-    #posts #post-list .post {
-      background-color: #2a2a2a;
-      border-color: #444;
-    }
-  }  
+  }
+
+  main #login,
+  main #signup,
+  main #post-box,
+  main #posts {
+    background-color: #2e2e2e;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  #posts #post-list .post {
+    background-color: #2a2a2a;
+    border-color: #444;
+  }
+}

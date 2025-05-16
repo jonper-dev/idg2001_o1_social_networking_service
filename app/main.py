@@ -11,6 +11,7 @@ app.add_middleware(
     ## Allowed origins, frontend during development, more when deploying.
     allow_origins=[
         "http://127.0.0.1:5500",
+        "http://localhost:5500",
         "https://idg2001-social-networking-service.onrender.com",
         "https://idg2001-o1-social-networking-service.onrender.com"
     ],
