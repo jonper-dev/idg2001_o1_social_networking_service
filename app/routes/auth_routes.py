@@ -3,11 +3,12 @@
 #####################################
 from fastapi import APIRouter, Depends, Response, Cookie, HTTPException
 from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.db import get_db
 from app import crud 
-from app.models.models import LoginInput, SignupInput
+from app.models.models import Post
 from app.session import create_session, get_user_id, delete_session, session_store
+from app.schemas.schemas import LoginInput, SignupInput, AuthStatus, UserPublic
 import uuid
 import traceback
 ## Note that directories are separated by a dot (.) and not a slash (/).
@@ -76,10 +77,10 @@ def logout_user(
     else:
         raise HTTPException(status_code=401, detail="Not logged in.")
     
-##########################
-## Current user profile ##
-##########################
-@router.get("/profile")
+#######################
+## Current user auth ##
+#######################
+@router.get("/me", response_model=AuthStatus)
 def get_current_user(session_id: str = Cookie(None), db: Session = Depends(get_db)):
     if not session_id:
         raise HTTPException(status_code=401, detail="Not authenticated")
@@ -92,8 +93,9 @@ def get_current_user(session_id: str = Cookie(None), db: Session = Depends(get_d
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    print("Session store:", session_store)
-    print("Session ID:", session_id)
-    print("User ID:", user_id)
+    print("User data:", user)
 
-    return {"authenticated": True, "user_id": user.id, "username": user.name}
+    return AuthStatus(
+    authenticated=True,
+    user=UserPublic.model_validate(user)
+)
