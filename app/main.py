@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from app.db import get_db
-from app.routes import users, posts, auth_routes ## Importing our route modules
+from app.routes import users, posts, search, auth_routes ## Importing our route modules
 
 app = FastAPI()
 
@@ -28,3 +28,4 @@ def read_root():
 app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(posts.router, prefix="/posts", tags=["Posts"])
 app.include_router(auth_routes.router, prefix="/auth", tags=["Auth"])
+app.include_router(search.router, prefix="/search", tags=["Search"])

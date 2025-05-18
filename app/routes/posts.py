@@ -36,7 +36,6 @@ def get_posts(
         for post in posts
     ]
 
-
 ## Getting a specific post by its ID.
 @router.get("/{post_id}")
 def get_post(post_id: int, db: Session = Depends(get_db)):
@@ -45,23 +44,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Post not found.")
     return post
 
-## Search posts by content
-@router.get("/search")
-def search(
-    query: str,
-    type: str = "posts",  # Default to searching posts
-    db: Session = Depends(get_db)
-):
-    if type == "posts":
-        results = crud.search_posts(db, query)
-    elif type == "accounts":
-        results = crud.search_accounts(db, query)
-    elif type == "hashtags":
-        results = crud.search_hashtags(db, query)
-    else:
-        raise HTTPException(status_code=400, detail="Invalid search type.")
-    
-    return results
+
 
 
 ############################
