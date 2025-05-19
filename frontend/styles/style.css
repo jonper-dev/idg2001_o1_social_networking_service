@@ -45,9 +45,8 @@ body .error {
   color: #e63946;
   font-weight: bold;
 }
-body .success {
+body #post-message.success {
   color: #2a9d8f;
-  font-weight: bold;
 }
 
 [data-theme=light] body {

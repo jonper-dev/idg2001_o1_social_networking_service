@@ -70,13 +70,12 @@ body {
   }
 
   .error {
-    color: $error-color;
+    color: $error-color; // Red color for error messages
     font-weight: bold;
   }
 
-  .success {
-    color: $success-color;
-    font-weight: bold;
+  #post-message.success {
+    color: $success-color; // Ensure green color applies
   }
 }
 
