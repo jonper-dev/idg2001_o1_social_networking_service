@@ -97,7 +97,7 @@ def create_post(
         post_data,
         user_id: int):
 
-    if not post_data.content or not post_data.user_id:
+    if not post_data.content:
         raise ValueError("Post content is required.")  # Validate input
 
     post = Post(
