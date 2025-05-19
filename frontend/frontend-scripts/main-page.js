@@ -73,7 +73,10 @@ async function loadPosts() {
 
   // Always try to fetch fresh posts.
   try {
-    const res = await fetch(`${API_BASE_URL}/posts/`);
+    const res = await fetch(`${API_BASE_URL}/posts/`, {
+      credentials: "include", // Enables session cookies. Used to get "like"-states here.
+    });
+
     if (!res.ok) throw new Error("Failed to fetch posts");
 
     const posts = await res.json();
@@ -109,15 +112,12 @@ function renderPosts(posts, container) {
     const cachedLikes = localStorage.getItem(`post_${post.id}_likes`);
     const displayLikes = cachedLikes ? parseInt(cachedLikes) : post.likes;
     likeCount.textContent = ` ${displayLikes}`;
-
     likeBtn.appendChild(likeCount);
 
     // Like/unlike logic
     likeBtn.addEventListener("click", async () => {
       const isLiking = !post.is_liked_by_user;
-      const url = `${API_BASE_URL}/posts/${post.id}/${
-        isLiking ? "like" : "unlike"
-      }`;
+      const url = `${API_BASE_URL}/posts/${post.id}/${isLiking ? "like" : "unlike"}`;
 
       try {
         const res = await fetch(url, {
@@ -126,15 +126,16 @@ function renderPosts(posts, container) {
         });
 
         if (res.ok) {
+          // Update the local post state.
           post.is_liked_by_user = isLiking;
           post.likes += isLiking ? 1 : -1;
 
-          // Update UI
-          likeBtn.innerHTML = post.is_liked_by_user ? "❤️" : "🤍";
+          // Update the UI.
+          likeBtn.innerHTML = isLiking ? "❤️" : "🤍";  // Resets content safely.
           likeCount.textContent = ` ${post.likes}`;
-          likeBtn.appendChild(likeCount);
+          likeBtn.appendChild(likeCount);  // Add back the updated like-counter.
 
-          // Cache like count if it's large
+          // Cache like count if it's large.
           if (post.likes > 100) {
             localStorage.setItem(`post_${post.id}_likes`, post.likes);
           } else {
@@ -149,6 +150,7 @@ function renderPosts(posts, container) {
         alert("Error with like button.");
       }
     });
+
 
     postDiv.innerHTML = `
       <strong>${post.username || "anon"}</strong>: ${post.content}
