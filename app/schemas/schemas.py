@@ -37,7 +37,6 @@ class UserPatch(BaseModel):
 class PostCreate(BaseModel):
     content: str
     reply_to_id: Optional[int] = None
-    hashtags: Optional[list[str]] = []
 
 ## Used for updating a post (full update, PUT)
 class PostUpdate(BaseModel):
