@@ -16,6 +16,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// Post-sorting dropdown.
+document.addEventListener("DOMContentLoaded", () => {
+  const sortSelect = document.querySelector("#sort-select");
+  if (sortSelect) {
+    sortSelect.addEventListener("change", () => {
+      loadPosts();  // Re-fetch or re-sort and re-render
+    });
+  }
+});
+
 // Post-button
 document.addEventListener("DOMContentLoaded", () => {
   const postBtn = document.querySelector("#post-button");
@@ -56,7 +66,7 @@ function postPost() {
       }
     })
     .catch((err) => console.error("Post error:", err));
-}
+};
 
 // #################################
 // ### Loading & rendering posts ###
@@ -64,12 +74,14 @@ function postPost() {
 // Load post feed (also integrate caching-functions)
 async function loadPosts() {
   const postList = document.getElementById("post-list");
+  const sortBy = document.getElementById("sort-select")?.value || "newest";
 
   // Try to show cached posts (if valid).
   const cached = getCachedPosts();
   if (cached) {
     console.log("Loaded posts from local cache.");
-    renderPosts(cached, postList);
+    const sorted = sortPosts(cached, sortBy);
+    renderPosts(sorted, postList);
   }
 
   // Always try to fetch fresh posts.
@@ -77,14 +89,14 @@ async function loadPosts() {
     const res = await fetch(`${API_BASE_URL}/posts/`, {
       credentials: "include", // Enables session cookies. Used to get "like"-states here.
     });
-
     if (!res.ok) throw new Error("Failed to fetch posts");
 
     const posts = await res.json();
-
-    cachePosts(posts); // Update cache
+    cachePosts(posts); // Update cache.
     console.log("Fetched fresh posts and updated cache.");
-    renderPosts(posts, postList); // Replace with fresh posts
+
+    const sorted = sortPosts(posts, sortBy);
+    renderPosts(sorted, postList); // Replace with fresh posts.
   } catch (err) {
     console.error("Load posts error:", err);
     if (!cached) {
@@ -92,7 +104,7 @@ async function loadPosts() {
         "<p>Failed to load posts and no cached data available.</p>";
     }
   }
-}
+};
 
 // For rendering posts
 function renderPosts(posts, container) {
@@ -162,6 +174,19 @@ function renderPosts(posts, container) {
     postDiv.appendChild(likeBtn);
 
     container.appendChild(postDiv);
+  });
+};
+
+// Helper-function to sort posts
+function sortPosts(posts, sortBy) {
+  return [...posts].sort((a, b) => {
+    if (sortBy === "oldest") {
+      return new Date(a.timestamp) - new Date(b.timestamp);
+    } else if (sortBy === "most-liked") {
+      return b.likes - a.likes;
+    } else { // Default: newest
+      return new Date(b.timestamp) - new Date(a.timestamp);
+    }
   });
 }
 
