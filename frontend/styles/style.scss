@@ -507,6 +507,184 @@ main {
 }
 
 // ===============================
+// PROFILE PAGE STYLES
+// ===============================
+.user-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: $white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+
+    &__user-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 15px;
+      border: 3px solid $primary-color;
+    }
+
+    &__username {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: $primary-color;
+      margin-bottom: 5px;
+    }
+
+    &__email {
+      font-size: 1rem;
+      color: $text-color;
+    }
+  }
+
+  &__my-posts {
+    width: 100%;
+    max-width: 600px;
+
+    &__header {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: $primary-color;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    &__list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+
+      .post {
+        background-color: $light-bg;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
+
+        p {
+          margin: 0 0 10px;
+          color: $text-color;
+        }
+
+        .post-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 10px;
+
+          button {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &.edit-btn {
+              background-color: $primary-color;
+              color: $white;
+
+              &:hover {
+                background-color: darken($primary-color, 10%);
+              }
+            }
+
+            &.delete-btn {
+              background-color: $error-color;
+              color: $white;
+
+              &:hover {
+                background-color: darken($error-color, 10%);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// ===============================
+// DARK MODE - PROFILE PAGE
+// ===============================
+[data-theme="dark"] .user-profile {
+  &__info {
+    background-color: $dark-light-bg; // Dark background for the profile info card
+    color: $dark-text-color; // Ensure text is readable
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); // Softer shadow for dark mode
+
+    &__user-image {
+      border: 3px solid $dark-primary-color; // Adjust border color for dark mode
+    }
+
+    &__username {
+      color: lighten($dark-primary-color, 15%); // Slightly lighter username color
+    }
+
+    &__email {
+      color: lighten($dark-text-color, 10%); // Slightly lighter email color
+    }
+  }
+
+  &__my-posts {
+    &__header {
+      color: lighten($dark-primary-color, 15%); // Match header color with username
+    }
+
+    &__list {
+      .post {
+        background-color: lighten($dark-light-bg, 7%); // Slightly lighter post background
+        color: $dark-text-color; // Ensure text is readable
+        border: 1px solid lighten($dark-secondary-color, 10%); // Subtle border for separation
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4); // Softer shadow for depth
+
+        &:hover {
+          background-color: lighten($dark-light-bg, 10%); // Slightly lighter on hover
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6); // More pronounced shadow on hover
+        }
+
+        p {
+          color: lighten($dark-text-color, 10%); // Slightly lighter text color
+        }
+
+        .post-actions {
+          button {
+            &.edit-btn {
+              background-color: $dark-primary-color; // Adjust edit button color
+              color: $dark-text-color;
+
+              &:hover {
+                background-color: lighten($dark-primary-color, 10%);
+              }
+            }
+
+            &.delete-btn {
+              background-color: $error-color; // Keep delete button consistent
+              color: $dark-text-color;
+
+              &:hover {
+                background-color: lighten($error-color, 10%);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// ===============================
 // FOOTER
 // ===============================
 footer {
