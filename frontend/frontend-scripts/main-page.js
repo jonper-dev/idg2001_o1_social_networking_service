@@ -151,7 +151,7 @@ function renderPosts(posts, container) {
     });
 
     postDiv.innerHTML = `
-      <strong>@${post.username || "anon"}</strong>: ${post.content}
+      <strong>${post.username || "anon"}</strong>: ${post.content}
       <br><small>${new Date(post.timestamp).toLocaleString()}</small>
     `;
 
