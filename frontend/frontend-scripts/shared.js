@@ -6,7 +6,6 @@ const API_BASE_URL =
 // #####################
 // ### Local caching ###
 // #####################
-
 const CACHE_KEY = "cached_posts";
 const TIMESTAMP_KEY = `${CACHE_KEY}_timestamp`;
 const CACHE_EXPIRY = 5 * 60 * 1000; // 5 minutes in milliseconds
