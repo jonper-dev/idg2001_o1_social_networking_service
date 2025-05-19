@@ -3,6 +3,7 @@ from app.models.models import User, Post, Hashtag, likes_table as likes, post_ha
 from sqlalchemy import or_
 import bcrypt
 import logging
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -88,6 +89,12 @@ def follow_user(db: Session, follower_id: int, followed_id: int):
 def list_accounts(db: Session, skip: int = 0, limit: int = 100):
     return db.query(User).offset(skip).limit(limit).all()
 
+################
+### Hashtags ###
+################
+
+def extract_hashtags_from_text(text: str) -> list[str]:
+    return list(set(re.findall(r"#\w+", text.lower())))
 
 ###################
 ### -- POSTS -- ###
@@ -106,9 +113,9 @@ def create_post(
         reply_to_id=post_data.reply_to_id
     )
 
-    # Handle hashtags
-    for tag in post_data.hashtags:
-        tag = tag.lower().strip()
+    # Extract and attach hashtags from content
+    hashtags = extract_hashtags_from_text(post_data.content)
+    for tag in hashtags:
         existing = db.query(Hashtag).filter(Hashtag.name == tag).first()
         if existing:
             post.hashtags.append(existing)
@@ -116,7 +123,7 @@ def create_post(
             new_tag = Hashtag(name=tag)
             db.add(new_tag)
             post.hashtags.append(new_tag)
-
+    # Add the post to the database
     db.add(post)
     db.commit()
     db.refresh(post)
@@ -197,7 +204,7 @@ def is_post_liked_by_user(db: Session, post_id: int, user_id: int):
 
 ## Reply to post
 def reply_to_post(db: Session, user_id: int, content: str, parent_id: int):
-    return create_post(db, post_data={"user_id": user_id, "content": content, "reply_to_id": parent_id})
+    return create_post(db, {"content": content, "reply_to_id": parent_id})
 
 ####################
 ### -- SEARCH -- ###

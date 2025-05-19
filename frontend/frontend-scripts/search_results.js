@@ -79,7 +79,7 @@ function renderHashtags(hashtags, container) {
   hashtags.forEach((hashtag) => {
     const div = document.createElement("div");
     div.className = "hashtag";
-    div.innerHTML = `#${hashtag.name || hashtag.tag}`;
+    div.innerHTML = `${hashtag.name || hashtag.tag}`;
     container.appendChild(div);
   });
 }
