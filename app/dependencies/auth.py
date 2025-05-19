@@ -18,4 +18,9 @@ def get_current_user_id(session_id: str = Cookie(None)) -> int:
 def get_optional_user_id(session_id: str = Cookie(None)) -> Optional[int]:
     if not session_id:
         return None
-    return lookup_user_id(session_id)
+
+    user_id = lookup_user_id(session_id)
+    if not user_id:
+        return None  ## Fails silently for optional use.
+
+    return user_id

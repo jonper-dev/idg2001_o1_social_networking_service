@@ -368,7 +368,6 @@ main {
 
     p {
       margin-top: 10px;
-      font-size: 0.9rem;
     }
   }
 
@@ -452,6 +451,20 @@ main {
     }
   }
 
+  // Post-text and replies.
+  .post-text {
+    font-size: 1em;
+  }
+
+  .reply .post-text {
+    border-left: 3px solid $primary-color;
+    padding-left: 10px;
+  }
+
+  .post-timestamp {
+    font-size: 0.9em;
+  }
+
   // Style textarea in the post box to match posts
   #post-box {
     textarea {
@@ -499,7 +512,6 @@ main {
 
     p {
       margin-top: 10px;
-      font-size: 0.9rem;
       color: $error-color;
       text-align: center;
     }

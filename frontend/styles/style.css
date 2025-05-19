@@ -286,7 +286,6 @@ main #login button, main #signup button, main #post-box button, main #posts butt
 }
 main #login p, main #signup p, main #post-box p, main #posts p {
   margin-top: 10px;
-  font-size: 0.9rem;
 }
 main #login {
   display: flex;
@@ -355,6 +354,16 @@ main #posts #post-list .post .like-btn:hover {
   transform: scale(1.2);
   color: #1DA1F2;
 }
+main .post-text {
+  font-size: 1em;
+}
+main .reply .post-text {
+  border-left: 3px solid #1DA1F2;
+  padding-left: 10px;
+}
+main .post-timestamp {
+  font-size: 0.9em;
+}
 main #post-box textarea {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
@@ -395,7 +404,6 @@ main #post-box button:focus {
 }
 main #post-box p {
   margin-top: 10px;
-  font-size: 0.9rem;
   color: #e63946;
   text-align: center;
 }

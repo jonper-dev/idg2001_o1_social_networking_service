@@ -56,7 +56,7 @@ class Post(Base):
     author = relationship("User", back_populates="posts")
     likes = relationship("User", secondary=likes_table, back_populates="liked_posts")
     hashtags = relationship("Hashtag", secondary=post_hashtags, back_populates="posts")
-    replies = relationship("Post", remote_side=[id], backref="parent")
+    reply_to = relationship("Post", remote_side=[id], backref="replies")
 
 class Hashtag(Base):
     __tablename__ = 'hashtags'
