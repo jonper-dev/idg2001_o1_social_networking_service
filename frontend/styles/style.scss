@@ -540,7 +540,7 @@ footer {
   }
 }
 
-#search-type {
+select {
   appearance: none; // Remove default browser styling
   background-color: $white;
   border: 1px solid #ddd;
@@ -569,7 +569,7 @@ footer {
 }
 
 // Dark mode styling for #search-type
-[data-theme="dark"] #search-type {
+[data-theme="dark"] select {
   background-color: $dark-light-bg;
   border: 1px solid $dark-secondary-color;
   color: $dark-text-color;
