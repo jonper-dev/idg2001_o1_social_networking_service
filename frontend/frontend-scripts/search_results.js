@@ -61,7 +61,7 @@ function renderPosts(posts, container) {
   posts.forEach((post) => {
     const div = document.createElement("div");
     div.className = "post";
-    div.innerHTML = `<strong>${post.author || "Anonymous"}</strong>: ${post.content}`;
+    div.innerHTML = `<strong>${post.username || "Anonymous"}</strong>: ${post.content}`;
     container.appendChild(div);
   });
 }
@@ -70,7 +70,7 @@ function renderAccounts(accounts, container) {
   accounts.forEach((account) => {
     const div = document.createElement("div");
     div.className = "account";
-    div.innerHTML = `<strong>${account.name}</strong> (${account.email})`;
+    div.innerHTML = `<strong>${account.name}</strong>`;
     container.appendChild(div);
   });
 }
