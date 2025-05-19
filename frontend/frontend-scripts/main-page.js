@@ -37,6 +37,7 @@ function postPost() {
   fetch(`${API_BASE_URL}/posts/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify({ user_id, content }),
   })
     .then((res) => res.json())
