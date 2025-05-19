@@ -55,17 +55,23 @@ function postPost() {
       const msg = document.querySelector("#post-message");
       const success = data.id && data.content;
 
-      msg.textContent = success
-        ? "Post created successfully!"
-        : data.detail || "Post failed.";
-      msg.className = success ? "success" : "error";
-
+      // Set the message text and class based on success
       if (success) {
-        document.querySelector("#post-content").value = "";
-        loadPosts(); // Refresh the post list.
+        msg.textContent = "Post created successfully!";
+        msg.className = "success"; // Set to "success" for green styling
+        document.querySelector("#post-content").value = ""; // Clear the textarea
+        loadPosts(); // Refresh the post list
+      } else {
+        msg.textContent = data.detail || "Post failed.";
+        msg.className = "error"; // Set to "error" for red styling
       }
     })
-    .catch((err) => console.error("Post error:", err));
+    .catch((err) => {
+      const msg = document.querySelector("#post-message");
+      msg.textContent = "An error occurred while creating the post.";
+      msg.className = "error"; // Set to "error" for red styling
+      console.error("Post error:", err);
+    });
 };
 
 // #################################

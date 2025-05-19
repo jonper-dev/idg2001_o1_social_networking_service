@@ -45,9 +45,8 @@ body .error {
   color: #e63946;
   font-weight: bold;
 }
-body .success {
+body #post-message.success {
   color: #2a9d8f;
-  font-weight: bold;
 }
 
 [data-theme=light] body {
@@ -409,6 +408,143 @@ main #post-box p {
   text-align: center;
 }
 
+.user-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+.user-profile__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+}
+.user-profile__info__user-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  margin-bottom: 15px;
+  border: 3px solid #1DA1F2;
+}
+.user-profile__info__username {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1DA1F2;
+  margin-bottom: 5px;
+}
+.user-profile__info__email {
+  font-size: 1rem;
+  color: #333;
+}
+.user-profile__my-posts {
+  width: 100%;
+  max-width: 600px;
+}
+.user-profile__my-posts__header {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1DA1F2;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.user-profile__my-posts__list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.user-profile__my-posts__list .post {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+}
+.user-profile__my-posts__list .post p {
+  margin: 0 0 10px;
+  color: #333;
+}
+.user-profile__my-posts__list .post .post-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.user-profile__my-posts__list .post .post-actions button {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.user-profile__my-posts__list .post .post-actions button.edit-btn {
+  background-color: #1DA1F2;
+  color: #fff;
+}
+.user-profile__my-posts__list .post .post-actions button.edit-btn:hover {
+  background-color: #0c85d0;
+}
+.user-profile__my-posts__list .post .post-actions button.delete-btn {
+  background-color: #e63946;
+  color: #fff;
+}
+.user-profile__my-posts__list .post .post-actions button.delete-btn:hover {
+  background-color: #d21a28;
+}
+
+[data-theme=dark] .user-profile__info {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+[data-theme=dark] .user-profile__info__user-image {
+  border: 3px solid #0d6efd;
+}
+[data-theme=dark] .user-profile__info__username {
+  color: #599bfe;
+}
+[data-theme=dark] .user-profile__info__email {
+  color: #fafafa;
+}
+[data-theme=dark] .user-profile__my-posts__header {
+  color: #599bfe;
+}
+[data-theme=dark] .user-profile__my-posts__list .post {
+  background-color: #303030;
+  color: #e0e0e0;
+  border: 1px solid #004d99;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+[data-theme=dark] .user-profile__my-posts__list .post:hover {
+  background-color: #383838;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+[data-theme=dark] .user-profile__my-posts__list .post p {
+  color: #fafafa;
+}
+[data-theme=dark] .user-profile__my-posts__list .post .post-actions button.edit-btn {
+  background-color: #0d6efd;
+  color: #e0e0e0;
+}
+[data-theme=dark] .user-profile__my-posts__list .post .post-actions button.edit-btn:hover {
+  background-color: #408cfd;
+}
+[data-theme=dark] .user-profile__my-posts__list .post .post-actions button.delete-btn {
+  background-color: #e63946;
+  color: #e0e0e0;
+}
+[data-theme=dark] .user-profile__my-posts__list .post .post-actions button.delete-btn:hover {
+  background-color: #ec6670;
+}
+
 footer {
   margin-top: 20px;
   padding: 10px;
@@ -432,7 +568,7 @@ footer p {
     width: 90%;
   }
 }
-#search-type {
+select {
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
@@ -445,35 +581,35 @@ footer p {
   cursor: pointer;
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
-#search-type:hover {
+select:hover {
   background-color: white;
   border-color: #1DA1F2;
 }
-#search-type:focus {
+select:focus {
   outline: none;
   border-color: #1DA1F2;
   box-shadow: 0 0 5px rgba(29, 161, 242, 0.5);
 }
-#search-type option {
+select option {
   background-color: #fff;
   color: #333;
 }
 
-[data-theme=dark] #search-type {
+[data-theme=dark] select {
   background-color: #1e1e1e;
   border: 1px solid #003366;
   color: #e0e0e0;
 }
-[data-theme=dark] #search-type:hover {
+[data-theme=dark] select:hover {
   background-color: #2b2b2b;
   border-color: #0d6efd;
 }
-[data-theme=dark] #search-type:focus {
+[data-theme=dark] select:focus {
   outline: none;
   border-color: #0d6efd;
   box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
 }
-[data-theme=dark] #search-type option {
+[data-theme=dark] select option {
   background-color: #1e1e1e;
   color: #e0e0e0;
 }/*# sourceMappingURL=style.css.map */
