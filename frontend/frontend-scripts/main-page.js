@@ -164,11 +164,18 @@ function renderPosts(posts, container) {
       }
     });
 
-
     postDiv.innerHTML = `
-      <strong>${post.username || "anon"}</strong>: ${post.content}
-      <br><small>${new Date(post.timestamp).toLocaleString()}</small>
+      <p class="post-text">
+        <strong>${post.username || "anon"}</strong>${
+          post.reply_to_username ? `<strong> @ ${post.reply_to_username}</strong>` : ""
+        }: ${post.content}
+      </p>
+      <p class="post-timestamp"><small>${new Date(post.timestamp).toLocaleString()}</small></p>
     `;
+
+    if (post.reply_to_username) {
+      postDiv.classList.add("reply");
+    }
 
     // Append like button to post div
     postDiv.appendChild(likeBtn);

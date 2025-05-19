@@ -22,7 +22,7 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"message": "Server is running"}
+    return {"message": "Server is running."}
 
 ## Including the routers from other files.
 app.include_router(users.router, prefix="/users", tags=["Users"])

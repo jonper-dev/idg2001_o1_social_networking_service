@@ -59,6 +59,7 @@ class PostOutput(BaseModel):
     username: str
     likes: int
     is_liked_by_user: bool
+    reply_to_username: Optional[str] = None
 
     class Config:
         orm_mode = True

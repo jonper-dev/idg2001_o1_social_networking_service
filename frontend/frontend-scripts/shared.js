@@ -91,16 +91,16 @@ window.addEventListener("DOMContentLoaded", () => {
     credentials: "include", // sends the session_id cookie
   })
     .then((res) => {
-      if (!res.ok) throw new Error("Not logged in");
+      if (!res.ok) throw new Error("Not logged in.");
       return res.json();
     })
     .then((data) => {
-      authLink.href = `/frontend/profile.html?user_id=${data.user_id}`;
+      authLink.href = `/frontend/profile.html?user_id=${data.user.id}`;
       authLink.innerHTML = `
-      <img src="assets/profile-icon.svg" 
-      alt="Profile Icon" 
-      style="width: 25px; vertical-align: middle; margin-right: 6px;"> 
-      Profile
+        <img src="assets/profile-icon.svg"
+            alt="Profile Icon"
+            style="width: 25px; vertical-align: middle; margin-right: 6px;">
+        ${data.user.name}
       `;
     })
     .catch((err) => {
