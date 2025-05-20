@@ -2,17 +2,34 @@ from fastapi import APIRouter, Cookie, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
-from app.db import get_db
+from app.db import get_db, SessionLocal
 from app import crud
 from app.dependencies.auth import get_current_user_id, get_optional_user_id
 from app.models.models import Post
 from app.schemas.schemas import PostCreate, PostUpdate, PostPatch, PostOutput
 from app.session import session_store
 from app.utils.redis_cache import get_cache, set_cache, delete_cache
+from app.utils.like_batcher import LikeBatcher
 import json
 ## Note that directories are separated by a dot (.) and not a slash (/).
 
 router = APIRouter()
+
+# Initialize the LikeBatcher (you may want to use dependency injection for the DB session)
+like_batcher = None
+
+@router.on_event("startup")
+def initialize_batcher():
+    global like_batcher
+    db = SessionLocal()  # Create a database session
+    like_batcher = LikeBatcher(db=db, flush_interval=5)  # Use the correct flush interval
+
+@router.on_event("shutdown")
+def stop_batcher():
+    global like_batcher
+    if like_batcher:
+        like_batcher.stop()
+        like_batcher.db.close()  # Close the database session
 
 #########################
 ### -- GET-methods -- ###
@@ -131,45 +148,10 @@ def delete_post(
 
 ## Like post
 @router.post("/{post_id}/like")
-def like_post(
-    post_id: int, 
-    db: Session = Depends(get_db), 
-    user_id: int = Depends(get_current_user_id)
-    ):
-
-    return crud.toggle_like(db, user_id, post_id)
-
-# @router.post("/like/{post_id}")
-# def like_post(post_id: int, request: Request, db: Session = Depends(get_db)):
-#     user_id = check_user_authenticated(request)  # Use the helper function
-
-#     post = crud.get_post(db, post_id)
-#     if not post:
-#         raise HTTPException(status_code=404, detail="Post not found")
-
-#     if crud.is_post_liked_by_user(db, post_id, user_id):
-#         raise HTTPException(status_code=400, detail="Already liked this post")
-
-#     crud.like_post(db, user_id, post_id)
-
-#     return JSONResponse(content={"message": "Post liked successfully"}, status_code=200)
-
-## Unlike Post
-@router.post("/{post_id}/unlike")
-def unlike_post(
-    post_id: int,
-    db: Session = Depends(get_db),
-    user_id = Depends(get_current_user_id)
-):
-
-    post = crud.get_post(db, post_id)
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found.")
-
-    if not crud.is_post_liked_by_user(db, post_id, user_id):
-        raise HTTPException(status_code=400, detail="Post not liked.")
-
-    crud.unlike_post(db, user_id, post_id)
-
-    return JSONResponse(content={"message": "Post unliked successfully."})
+def like_post(post_id: int, user_id: int = Depends(get_current_user_id)):
+    global like_batcher
+    if not like_batcher:
+        raise HTTPException(status_code=500, detail="LikeBatcher is not initialized.")
+    like_batcher.add_like(user_id, post_id)
+    return {"message": "Like added to batch"}
 
