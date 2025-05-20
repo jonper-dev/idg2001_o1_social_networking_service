@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function postPost() {
   const content = document.getElementById("post-content").value;
   const user_id = localStorage.getItem("user_id");
+  const reply_to_id = document.getElementById("reply-to-id").value;
 
   if (!user_id) {
     alert("Please log in first!");
@@ -47,8 +48,12 @@ function postPost() {
   fetch(`${API_BASE_URL}/posts/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ user_id, content }),
+    credentials: "include", // Include session cookies
+    body: JSON.stringify({
+      user_id,
+      content,
+      reply_to_id: reply_to_id || null, // Include reply ID only if set
+    }),
   })
     .then((res) => res.json())
     .then((data) => {
@@ -59,8 +64,19 @@ function postPost() {
       if (success) {
         msg.textContent = "Post created successfully!";
         msg.className = "success"; // Set to "success" for green styling
-        document.querySelector("#post-content").value = ""; // Clear the textarea
-        loadPosts(); // Refresh the post list
+
+        // Clear the post form
+        document.getElementById("post-content").value = "";
+        document.getElementById("reply-to-id").value = "";
+
+        // Clear reply info display (if shown)
+        const replyInfo = document.getElementById("reply-info");
+        if (replyInfo) {
+          replyInfo.textContent = "";
+        }
+
+        // Refresh the post list
+        loadPosts();
       } else {
         msg.textContent = data.detail || "Post failed.";
         msg.className = "error"; // Set to "error" for red styling
@@ -145,16 +161,16 @@ function renderPosts(posts, container) {
         });
 
         if (res.ok) {
-          // Update the local post state.
+          // Update local post state
           post.is_liked_by_user = isLiking;
           post.likes += isLiking ? 1 : -1;
 
-          // Update the UI.
-          likeBtn.innerHTML = isLiking ? "❤️" : "🤍";  // Resets content safely.
+          // Update UI
+          likeBtn.innerHTML = isLiking ? "❤️" : "🤍";
           likeCount.textContent = ` ${post.likes}`;
-          likeBtn.appendChild(likeCount);  // Add back the updated like-counter.
+          likeBtn.appendChild(likeCount);
 
-          // Cache like count if it's large.
+          // Update cache
           if (post.likes > 100) {
             localStorage.setItem(`post_${post.id}_likes`, post.likes);
           } else {
@@ -170,25 +186,58 @@ function renderPosts(posts, container) {
       }
     });
 
+    // Set inner HTML for the main post content
     postDiv.innerHTML = `
       <p class="post-text">
         <strong>${post.username || "anon"}</strong>${
-          post.reply_to_username ? `<strong> @ ${post.reply_to_username}</strong>` : ""
+          post.reply_to_username ? ` @ ${post.reply_to_username}` : ""
         }: ${post.content}
       </p>
-      <p class="post-timestamp"><small>${new Date(post.timestamp).toLocaleString()}</small></p>
+      <p class="post-timestamp">
+        <small>${new Date(post.timestamp).toLocaleString()}</small>
+      </p>
     `;
 
+    // Mark as reply (for eventual styling)
     if (post.reply_to_username) {
       postDiv.classList.add("reply");
     }
 
-    // Append like button to post div
-    postDiv.appendChild(likeBtn);
+    // Reply button
+    const replyBtn = document.createElement("button");
+    replyBtn.textContent = "Reply";
+    replyBtn.classList.add("reply-btn");
 
+    replyBtn.addEventListener("click", () => {
+      document.getElementById("reply-to-id").value = post.id;
+
+      // Show reply context
+      const replyInfo = document.getElementById("reply-info");
+      if (replyInfo) {
+        replyInfo.innerHTML = `Replying to <strong>${post.username}</strong> 
+          <a href="#" id="cancel-reply">(cancel)</a>`;
+
+        const cancelBtn = document.getElementById("cancel-reply");
+        if (cancelBtn) {
+          cancelBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            document.getElementById("reply-to-id").value = "";
+            replyInfo.textContent = "";
+          });
+        }
+      }
+
+      document.getElementById("post-content").focus();
+    });
+
+    // Append interaction buttons
+    postDiv.appendChild(likeBtn);
+    postDiv.appendChild(replyBtn);
+
+    // Add the post to the DOM
     container.appendChild(postDiv);
   });
-};
+}
 
 // Helper-function to sort posts
 function sortPosts(posts, sortBy) {
