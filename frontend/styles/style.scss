@@ -515,6 +515,12 @@ main {
       color: $error-color;
       text-align: center;
     }
+
+    // The reply info paragraph (specifically)
+    .reply-info {
+      font-size: 0.9em;
+      color: $secondary-color;
+    }
   }
 }
 
