@@ -48,7 +48,7 @@ def get_posts(
         for post in posts
     ]
 
-    set_cache(cache_key, json.dumps([post.dict() for post in post_outputs]))
+    set_cache(cache_key, json.dumps([post.dict() for post in post_outputs], default=str))
     return post_outputs
 
 ## Getting a specific post by its ID.
