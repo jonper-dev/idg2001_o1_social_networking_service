@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, Table, Boolean, DateTime, func
 from sqlalchemy.orm import relationship, declarative_base
+from datetime import datetime, timezone
 
 Base = declarative_base()
 
@@ -48,7 +49,7 @@ class Post(Base):
     __tablename__ = 'posts'
     id = Column(Integer, primary_key=True, index=True)
     content = Column(Text)
-    created_at = Column(DateTime, default=func.now())
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     edited = Column(Boolean, default=False)
     user_id = Column(Integer, ForeignKey('users.id'))
     reply_to_id = Column(Integer, ForeignKey('posts.id'), nullable=True)
