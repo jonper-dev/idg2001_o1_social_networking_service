@@ -407,6 +407,10 @@ main #post-box p {
   color: #e63946;
   text-align: center;
 }
+main #post-box .reply-info {
+  font-size: 0.9em;
+  color: #0056b3;
+}
 
 .user-profile {
   display: flex;
