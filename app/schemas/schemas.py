@@ -100,6 +100,12 @@ class UserPublic(BaseModel):
         "from_attributes": True
     }
 
+#######################
+### Hashtag details ###
+#######################  
+class HashtagPublic(BaseModel):
+    name: str
+
 ##################
 ### Auth Satus ###
 ##################
