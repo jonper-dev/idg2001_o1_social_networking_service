@@ -190,7 +190,7 @@ function renderPosts(posts, container) {
     postDiv.innerHTML = `
       <p class="post-text">
         <strong>${post.username || "anon"}</strong>${
-          post.reply_to_username ? ` @ ${post.reply_to_username}` : ""
+          post.reply_to_username ? `<strong> @ ${post.reply_to_username}</strong>` : ""
         }: ${post.content}
       </p>
       <p class="post-timestamp">
