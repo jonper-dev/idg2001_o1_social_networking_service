@@ -10,8 +10,6 @@ services:
       - .env
     depends_on:
       - redis
-    ports:
-      - "8000:8000"  # Map container's port 8000 to host's port 8000
 
   redis:
     image: redis:alpine
