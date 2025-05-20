@@ -8,6 +8,8 @@ from app.dependencies.auth import get_current_user_id, get_optional_user_id
 from app.models.models import Post
 from app.schemas.schemas import PostCreate, PostUpdate, PostPatch, PostOutput
 from app.session import session_store
+from app.utils.redis_cache import get_cache, set_cache, delete_cache
+import json
 ## Note that directories are separated by a dot (.) and not a slash (/).
 
 router = APIRouter()
@@ -21,10 +23,18 @@ def get_posts(
     db: Session = Depends(get_db),
     user_id: Optional[int] = Depends(get_optional_user_id)
 ):
-    posts = db.query(Post).options(joinedload(Post.likes),
-                                   joinedload(Post.reply_to).joinedload(Post.author)).all()
+    cache_key = "all_posts"
+    cached_posts = get_cache(cache_key)
 
-    return [
+    if cached_posts:
+        return json.loads(cached_posts)
+
+    posts = db.query(Post).options(
+        joinedload(Post.likes),
+        joinedload(Post.reply_to).joinedload(Post.author)
+    ).all()
+
+    post_outputs = [
         PostOutput(
             id=post.id,
             content=post.content,
@@ -37,6 +47,9 @@ def get_posts(
         )
         for post in posts
     ]
+
+    set_cache(cache_key, json.dumps([post.dict() for post in post_outputs]))
+    return post_outputs
 
 ## Getting a specific post by its ID.
 @router.get("/{post_id}")
@@ -65,11 +78,8 @@ def create_post(
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user_id)
 ):
-    try:
-        return crud.create_post(db, post_data, user_id=user_id)
-    except Exception as e:
-        print("Error creating post:", e)
-        raise HTTPException(status_code=500, detail="Could not create post.")
+    delete_cache("all_posts")
+    return crud.create_post(db, post_data, user_id=user_id)
 
 ## Updating a post.
 @router.put("/{post_id}")
@@ -78,14 +88,8 @@ def update_post(
     updated: PostUpdate,
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user_id)
-    ): 
-
-    post = crud.get_post(db, post_id)
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found.")
-
-    ## Verify ownership using helper function 
-    verify_ownership(post, user_id)
+):
+    delete_cache("all_posts")
     return crud.update_post(db, post_id, updated.content)
 
 ## Partial update of a post. Only the fields that are provided will be updated.
@@ -118,14 +122,8 @@ def delete_post(
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user_id)
 ):
-    post = crud.get_post(db, post_id)
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found.")
-    
-    verify_ownership(post, user_id)
-
-    crud.delete_post(db, post_id)
-    return {"message": "Post deleted."}
+    delete_cache("all_posts")
+    return crud.delete_post(db, post_id)
 
 ##########################
 ### Like / Unlike Post ###
