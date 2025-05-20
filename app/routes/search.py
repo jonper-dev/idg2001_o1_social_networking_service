@@ -18,9 +18,7 @@ def search(
     user_id: Optional[int] = Depends(get_optional_user_id)
 ):
     if type.lower() == "posts":  # Normalize the type to lowercase
-        posts = db.query(Post).options(joinedload(Post.likes), joinedload(Post.author))\
-            .filter(Post.content.ilike(f"%{query}%")).all()
-
+        posts = crud.search_posts(db, query)
         return [
             PostOutput(
                 id=post.id,
@@ -29,7 +27,8 @@ def search(
                 user_id=post.user_id,
                 username=post.author.name if post.author else "Anonymous",
                 likes=len(post.likes),
-                is_liked_by_user=any(liker.id == user_id for liker in post.likes) if user_id else False
+                is_liked_by_user=any(liker.id == user_id for liker in post.likes) if user_id else False,
+                hashtags=[tag.name for tag in post.hashtags] if post.hashtags else []
             )
             for post in posts
         ]

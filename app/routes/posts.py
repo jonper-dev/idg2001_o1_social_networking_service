@@ -21,8 +21,11 @@ def get_posts(
     db: Session = Depends(get_db),
     user_id: Optional[int] = Depends(get_optional_user_id)
 ):
-    posts = db.query(Post).options(joinedload(Post.likes),
-                                   joinedload(Post.reply_to).joinedload(Post.author)).all()
+    posts = db.query(Post).options(
+        joinedload(Post.likes),
+        joinedload(Post.reply_to).joinedload(Post.author),
+        joinedload(Post.hashtags),
+        ).all()
 
     return [
         PostOutput(
@@ -33,7 +36,8 @@ def get_posts(
             username=post.author.name,
             likes=len(post.likes),
             is_liked_by_user=any(liker.id == user_id for liker in post.likes) if user_id else False,
-            reply_to_username=post.reply_to.author.name if post.reply_to else None
+            reply_to_username=post.reply_to.author.name if post.reply_to else None,
+            hashtags=[hashtag.name for hashtag in post.hashtags]
         )
         for post in posts
     ]
