@@ -542,7 +542,9 @@ main #post-box .reply-info {
   align-items: center;
   min-height: 50vh;
 }
-.search-results__list .post {
+.search-results__list .post,
+.search-results__list .account,
+.search-results__list .hashtag {
   width: 60%;
   background-color: #f9f9f9;
   padding: 15px;
@@ -551,7 +553,9 @@ main #post-box .reply-info {
   border: 1px solid #ddd;
   margin-bottom: 2%;
 }
-.search-results__list .post p {
+.search-results__list .post p,
+.search-results__list .account p,
+.search-results__list .hashtag p {
   margin: 0 0 10px;
   color: #333;
 }
@@ -599,6 +603,26 @@ main #post-box .reply-info {
 }
 [data-theme=dark] .user-profile__my-posts__list .post .post-actions button.delete-btn:hover {
   background-color: #ec6670;
+}
+
+[data-theme=dark] .search-results__list .post,
+[data-theme=dark] .search-results__list .account,
+[data-theme=dark] .search-results__list .hashtag {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #004d99;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+[data-theme=dark] .search-results__list .post:hover,
+[data-theme=dark] .search-results__list .account:hover,
+[data-theme=dark] .search-results__list .hashtag:hover {
+  background-color: #303030;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+[data-theme=dark] .search-results__list .post p,
+[data-theme=dark] .search-results__list .account p,
+[data-theme=dark] .search-results__list .hashtag p {
+  color: #fafafa;
 }
 
 footer {

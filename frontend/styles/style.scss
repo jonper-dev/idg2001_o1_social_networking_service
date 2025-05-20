@@ -677,7 +677,9 @@ main {
   justify-content: start;
   align-items: center;
   min-height: 50vh;
-  .post {
+  .post,
+  .account,
+  .hashtag {
     width: 60%;
     background-color: $light-bg;
     padding: 15px;
@@ -758,6 +760,29 @@ main {
           }
         }
       }
+    }
+  }
+}
+
+// ===============================
+// DARK MODE - SEARCH PAGE
+// ===============================
+[data-theme="dark"] .search-results__list {
+  .post,
+  .account,
+  .hashtag {
+    background-color: $dark-light-bg; // Dark background for search results
+    color: $dark-text-color; // Ensure text is readable
+    border: 1px solid lighten($dark-secondary-color, 10%); // Subtle border for separation
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4); // Softer shadow for dark mode
+
+    &:hover {
+      background-color: lighten($dark-light-bg, 7%); // Slightly lighter on hover
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6); // More pronounced shadow on hover
+    }
+
+    p {
+      color: lighten($dark-text-color, 10%); // Slightly lighter text color
     }
   }
 }
