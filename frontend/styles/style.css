@@ -7,8 +7,10 @@ body {
   color: #333;
   line-height: 1.6;
 }
-body h1, body h2, body h3 {
-  color: #1DA1F2;
+body h1,
+body h2,
+body h3 {
+  color: #1da1f2;
   margin-bottom: 1rem;
 }
 body .sr-only {
@@ -22,7 +24,8 @@ body .sr-only {
   white-space: nowrap;
   border: 0;
 }
-body input, body textarea {
+body input,
+body textarea {
   width: 100%;
   max-width: 500px;
   padding: 12px;
@@ -53,16 +56,19 @@ body #post-message.success {
   background-color: #f9f9f9;
   color: #333;
 }
-[data-theme=light] h1, [data-theme=light] h2, [data-theme=light] h3 {
-  color: #1DA1F2;
+[data-theme=light] h1,
+[data-theme=light] h2,
+[data-theme=light] h3 {
+  color: #1da1f2;
 }
-[data-theme=light] input, [data-theme=light] textarea {
+[data-theme=light] input,
+[data-theme=light] textarea {
   background-color: #fff;
   color: #333;
   border: 1px solid #ddd;
 }
 [data-theme=light] button {
-  background: #1DA1F2;
+  background: #1da1f2;
   color: #fff;
   border: none;
 }
@@ -71,10 +77,12 @@ body #post-message.success {
 }
 [data-theme=light] button:focus {
   outline: none;
-  border-color: #1DA1F2;
+  border-color: #1da1f2;
   box-shadow: 0 0 5px rgba(29, 161, 242, 0.5);
 }
-[data-theme=light] #auth-button, [data-theme=light] #search-button, [data-theme=light] #theme-toggle {
+[data-theme=light] #auth-button,
+[data-theme=light] #search-button,
+[data-theme=light] #theme-toggle {
   background-color: #fff;
   color: #333;
   border: 1px solid #ddd;
@@ -84,13 +92,17 @@ body #post-message.success {
   cursor: pointer;
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
-[data-theme=light] #auth-button:hover, [data-theme=light] #search-button:hover, [data-theme=light] #theme-toggle:hover {
+[data-theme=light] #auth-button:hover,
+[data-theme=light] #search-button:hover,
+[data-theme=light] #theme-toggle:hover {
   background-color: white;
-  border-color: #1DA1F2;
+  border-color: #1da1f2;
 }
-[data-theme=light] #auth-button:focus, [data-theme=light] #search-button:focus, [data-theme=light] #theme-toggle:focus {
+[data-theme=light] #auth-button:focus,
+[data-theme=light] #search-button:focus,
+[data-theme=light] #theme-toggle:focus {
   outline: none;
-  border-color: #1DA1F2;
+  border-color: #1da1f2;
   box-shadow: 0 0 5px rgba(29, 161, 242, 0.5);
 }
 
@@ -98,10 +110,14 @@ body #post-message.success {
   background-color: #242424;
   color: #e0e0e0;
 }
-[data-theme=dark] h1, [data-theme=dark] h2, [data-theme=dark] h3 {
+[data-theme=dark] h1,
+[data-theme=dark] h2,
+[data-theme=dark] h3 {
   color: #599bfe;
 }
-[data-theme=dark] #auth-button, [data-theme=dark] #search-button, [data-theme=dark] #theme-toggle {
+[data-theme=dark] #auth-button,
+[data-theme=dark] #search-button,
+[data-theme=dark] #theme-toggle {
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 1rem;
@@ -139,7 +155,10 @@ body #post-message.success {
   margin: 0;
   font-size: 0.9rem;
 }
-[data-theme=dark] main #login, [data-theme=dark] main #signup, [data-theme=dark] main #post-box, [data-theme=dark] main #posts {
+[data-theme=dark] main #login,
+[data-theme=dark] main #signup,
+[data-theme=dark] main #post-box,
+[data-theme=dark] main #posts {
   background-color: #383838;
   color: #e0e0e0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -169,7 +188,7 @@ body #post-message.success {
 }
 
 header {
-  background-color: #1DA1F2;
+  background-color: #1da1f2;
   padding: 15px 30px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -269,7 +288,10 @@ main {
   align-items: center;
   gap: 20px;
 }
-main #login, main #signup, main #post-box, main #posts {
+main #login,
+main #signup,
+main #post-box,
+main #posts {
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
@@ -278,13 +300,22 @@ main #login, main #signup, main #post-box, main #posts {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
-main #login h2, main #signup h2, main #post-box h2, main #posts h2 {
+main #login h2,
+main #signup h2,
+main #post-box h2,
+main #posts h2 {
   margin-bottom: 20px;
 }
-main #login button, main #signup button, main #post-box button, main #posts button {
+main #login button,
+main #signup button,
+main #post-box button,
+main #posts button {
   margin-top: 10px;
 }
-main #login p, main #signup p, main #post-box p, main #posts p {
+main #login p,
+main #signup p,
+main #post-box p,
+main #posts p {
   margin-top: 10px;
 }
 main #login {
@@ -352,13 +383,13 @@ main #posts #post-list .post .like-btn span {
 }
 main #posts #post-list .post .like-btn:hover {
   transform: scale(1.2);
-  color: #1DA1F2;
+  color: #1da1f2;
 }
 main .post-text {
   font-size: 1em;
 }
 main .reply .post-text {
-  border-left: 3px solid #1DA1F2;
+  border-left: 3px solid #1da1f2;
   padding-left: 10px;
 }
 main .post-timestamp {
@@ -379,14 +410,14 @@ main #post-box textarea {
 }
 main #post-box textarea:focus {
   outline: none;
-  border-color: #1DA1F2;
+  border-color: #1da1f2;
   box-shadow: 0 0 5px rgba(29, 161, 242, 0.5);
 }
 main #post-box button {
   display: block;
   margin: 0 auto;
   padding: 12px 20px;
-  background: #1DA1F2;
+  background: #1da1f2;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -437,12 +468,12 @@ main #post-box .reply-info {
   -o-object-fit: cover;
      object-fit: cover;
   margin-bottom: 15px;
-  border: 3px solid #1DA1F2;
+  border: 3px solid #1da1f2;
 }
 .user-profile__info__username {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1DA1F2;
+  color: #1da1f2;
   margin-bottom: 5px;
 }
 .user-profile__info__email {
@@ -456,7 +487,7 @@ main #post-box .reply-info {
 .user-profile__my-posts__header {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1DA1F2;
+  color: #1da1f2;
   margin-bottom: 10px;
   text-align: center;
 }
@@ -490,7 +521,7 @@ main #post-box .reply-info {
   transition: background-color 0.3s ease;
 }
 .user-profile__my-posts__list .post .post-actions button.edit-btn {
-  background-color: #1DA1F2;
+  background-color: #1da1f2;
   color: #fff;
 }
 .user-profile__my-posts__list .post .post-actions button.edit-btn:hover {
@@ -502,6 +533,27 @@ main #post-box .reply-info {
 }
 .user-profile__my-posts__list .post .post-actions button.delete-btn:hover {
   background-color: #d21a28;
+}
+
+.search-results__list {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  min-height: 50vh;
+}
+.search-results__list .post {
+  width: 60%;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  margin-bottom: 2%;
+}
+.search-results__list .post p {
+  margin: 0 0 10px;
+  color: #333;
 }
 
 [data-theme=dark] .user-profile__info {
@@ -552,7 +604,7 @@ main #post-box .reply-info {
 footer {
   margin-top: 20px;
   padding: 10px;
-  background-color: #1DA1F2;
+  background-color: #1da1f2;
   color: #fff;
   text-align: center;
 }
@@ -568,7 +620,10 @@ footer p {
   header nav #search-bar input {
     width: 200px;
   }
-  main #login, main #signup, main #post-box, main #posts {
+  main #login,
+  main #signup,
+  main #post-box,
+  main #posts {
     width: 90%;
   }
 }
@@ -587,11 +642,11 @@ select {
 }
 select:hover {
   background-color: white;
-  border-color: #1DA1F2;
+  border-color: #1da1f2;
 }
 select:focus {
   outline: none;
-  border-color: #1DA1F2;
+  border-color: #1da1f2;
   box-shadow: 0 0 5px rgba(29, 161, 242, 0.5);
 }
 select option {
