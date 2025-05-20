@@ -79,8 +79,6 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
     return post
 
 
-
-
 ############################
 ### Authenticated routes ###
 ############################
@@ -156,4 +154,26 @@ def like_post(post_id: int, user_id: int = Depends(get_current_user_id)):
         raise HTTPException(status_code=500, detail="LikeBatcher is not initialized.")
     like_batcher.add_like(user_id, post_id)
     return {"message": "Like added to batch"}
+
+## Unlike post
+@router.post("/{post_id}/unlike")
+def unlike_post(post_id: int, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
+    # Optional: check if post exists
+    post = db.query(Post).filter(Post.id == post_id).first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found.")
+
+    # Remove like if it exists
+    like = db.query(Post.likes.property.secondary).filter_by(user_id=user_id, post_id=post_id).first()
+    if not like:
+        raise HTTPException(status_code=400, detail="Post is not liked by user.")
+
+    db.execute(
+        Post.likes.property.secondary.delete().where(
+            (Post.likes.property.secondary.c.user_id == user_id) &
+            (Post.likes.property.secondary.c.post_id == post_id)
+        )
+    )
+    db.commit()
+    return {"message": "Like removed"}
 
