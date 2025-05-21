@@ -176,4 +176,3 @@ def unlike_post(post_id: int, db: Session = Depends(get_db), user_id: int = Depe
     )
     db.commit()
     return {"message": "Like removed"}
-

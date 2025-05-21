@@ -11,12 +11,9 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://127.0.0.1:5500",    ## Local file previews
+        "http://127.0.0.1:5500",    ## Local file previews.
         "http://localhost:5500",    ## Local dev servers (e.g., Live Server)
-        "http://localhost:8080",    ## Docker+NGINX frontend
-        "http://127.0.0.1:8080",
-        "https://idg2001-social-networking-service.onrender.com",
-        "https://idg2001-o1-social-networking-service.onrender.com"
+        "https://idg2001-social-networking-service.onrender.com"
     ],
     allow_credentials=True,         ## Needed for cookies (sessions)
     allow_methods=["*"],
