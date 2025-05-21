@@ -2,15 +2,34 @@ from fastapi import APIRouter, Cookie, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
-from app.db import get_db
+from app.db import get_db, SessionLocal
 from app import crud
 from app.dependencies.auth import get_current_user_id, get_optional_user_id
 from app.models.models import Post
 from app.schemas.schemas import PostCreate, PostUpdate, PostPatch, PostOutput
 from app.session import session_store
+from app.utils.redis_cache import get_cache, set_cache, delete_cache
+from app.utils.like_batcher import LikeBatcher
+import json
 ## Note that directories are separated by a dot (.) and not a slash (/).
 
 router = APIRouter()
+
+# Initialize the LikeBatcher (you may want to use dependency injection for the DB session)
+like_batcher = None
+
+@router.on_event("startup")
+def initialize_batcher():
+    global like_batcher
+    db = SessionLocal()  # Create a database session
+    like_batcher = LikeBatcher(db=db, flush_interval=5)  # Use the correct flush interval
+
+@router.on_event("shutdown")
+def stop_batcher():
+    global like_batcher
+    if like_batcher:
+        like_batcher.stop()
+        like_batcher.db.close()  # Close the database session
 
 #########################
 ### -- GET-methods -- ###
@@ -21,9 +40,19 @@ def get_posts(
     db: Session = Depends(get_db),
     user_id: Optional[int] = Depends(get_optional_user_id)
 ):
-    posts = db.query(Post).options(joinedload(Post.likes), joinedload(Post.author)).all()
+    cache_key = "all_posts"
+    cached_posts = get_cache(cache_key)
 
-    return [
+    if cached_posts:
+        return json.loads(cached_posts)
+
+    posts = db.query(Post).options(
+        joinedload(Post.likes),
+        joinedload(Post.reply_to).joinedload(Post.author),
+        joinedload(Post.hashtags),
+        ).all()
+
+    post_outputs = [
         PostOutput(
             id=post.id,
             content=post.content,
@@ -31,10 +60,15 @@ def get_posts(
             user_id=post.user_id,
             username=post.author.name,
             likes=len(post.likes),
-            is_liked_by_user=any(liker.id == user_id for liker in post.likes) if user_id else False
+            is_liked_by_user=any(liker.id == user_id for liker in post.likes) if user_id else False,
+            reply_to_username=post.reply_to.author.name if post.reply_to else None,
+            hashtags=[hashtag.name for hashtag in post.hashtags]
         )
         for post in posts
     ]
+
+    set_cache(cache_key, json.dumps([post.dict() for post in post_outputs], default=str))
+    return post_outputs
 
 ## Getting a specific post by its ID.
 @router.get("/{post_id}")
@@ -43,8 +77,6 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
     if not post:
         raise HTTPException(status_code=404, detail="Post not found.")
     return post
-
-
 
 
 ############################
@@ -63,11 +95,8 @@ def create_post(
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user_id)
 ):
-    try:
-        return crud.create_post(db, post_data, user_id=user_id)
-    except Exception as e:
-        print("Error creating post:", e)
-        raise HTTPException(status_code=500, detail="Could not create post.")
+    delete_cache("all_posts")
+    return crud.create_post(db, post_data, user_id=user_id)
 
 ## Updating a post.
 @router.put("/{post_id}")
@@ -76,14 +105,8 @@ def update_post(
     updated: PostUpdate,
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user_id)
-    ): 
-
-    post = crud.get_post(db, post_id)
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found.")
-
-    ## Verify ownership using helper function 
-    verify_ownership(post, user_id)
+):
+    delete_cache("all_posts")
     return crud.update_post(db, post_id, updated.content)
 
 ## Partial update of a post. Only the fields that are provided will be updated.
@@ -116,14 +139,8 @@ def delete_post(
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user_id)
 ):
-    post = crud.get_post(db, post_id)
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found.")
-    
-    verify_ownership(post, user_id)
-
-    crud.delete_post(db, post_id)
-    return {"message": "Post deleted."}
+    delete_cache("all_posts")
+    return crud.delete_post(db, post_id)
 
 ##########################
 ### Like / Unlike Post ###
@@ -131,45 +148,32 @@ def delete_post(
 
 ## Like post
 @router.post("/{post_id}/like")
-def like_post(
-    post_id: int, 
-    db: Session = Depends(get_db), 
-    user_id: int = Depends(get_current_user_id)
-    ):
+def like_post(post_id: int, user_id: int = Depends(get_current_user_id)):
+    global like_batcher
+    if not like_batcher:
+        raise HTTPException(status_code=500, detail="LikeBatcher is not initialized.")
+    like_batcher.add_like(user_id, post_id)
+    return {"message": "Like added to batch"}
 
-    return crud.toggle_like(db, user_id, post_id)
-
-# @router.post("/like/{post_id}")
-# def like_post(post_id: int, request: Request, db: Session = Depends(get_db)):
-#     user_id = check_user_authenticated(request)  # Use the helper function
-
-#     post = crud.get_post(db, post_id)
-#     if not post:
-#         raise HTTPException(status_code=404, detail="Post not found")
-
-#     if crud.is_post_liked_by_user(db, post_id, user_id):
-#         raise HTTPException(status_code=400, detail="Already liked this post")
-
-#     crud.like_post(db, user_id, post_id)
-
-#     return JSONResponse(content={"message": "Post liked successfully"}, status_code=200)
-
-## Unlike Post
+## Unlike post
 @router.post("/{post_id}/unlike")
-def unlike_post(
-    post_id: int,
-    db: Session = Depends(get_db),
-    user_id = Depends(get_current_user_id)
-):
-
-    post = crud.get_post(db, post_id)
+def unlike_post(post_id: int, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
+    # Optional: check if post exists
+    post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found.")
 
-    if not crud.is_post_liked_by_user(db, post_id, user_id):
-        raise HTTPException(status_code=400, detail="Post not liked.")
+    # Remove like if it exists
+    like = db.query(Post.likes.property.secondary).filter_by(user_id=user_id, post_id=post_id).first()
+    if not like:
+        raise HTTPException(status_code=400, detail="Post is not liked by user.")
 
-    crud.unlike_post(db, user_id, post_id)
-
-    return JSONResponse(content={"message": "Post unliked successfully."})
+    db.execute(
+        Post.likes.property.secondary.delete().where(
+            (Post.likes.property.secondary.c.user_id == user_id) &
+            (Post.likes.property.secondary.c.post_id == post_id)
+        )
+    )
+    db.commit()
+    return {"message": "Like removed"}
 

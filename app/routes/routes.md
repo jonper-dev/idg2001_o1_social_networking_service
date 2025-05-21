@@ -1,2 +1,2 @@
 # Routes
-The browser-routes go here.
+The API-routes go here.
