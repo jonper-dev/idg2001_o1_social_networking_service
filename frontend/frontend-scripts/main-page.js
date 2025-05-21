@@ -8,12 +8,23 @@ const API_BASE_URL =
 document.addEventListener("DOMContentLoaded", () => {
   const welcomeMessage = document.querySelector("#welcome-message");
 
-  const userName = localStorage.getItem("user_name");
-  if (userName && welcomeMessage) {
-    welcomeMessage.textContent = `Welcome, ${userName}.`;
-  } else {
-    console.log("No 'user_name' found in storage.");
-  }
+  fetch(`${API_BASE_URL}/auth/me`, {
+    credentials: "include",
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("Not logged in.");
+      return res.json();
+    })
+    .then((data) => {
+      if (welcomeMessage) {
+        welcomeMessage.textContent = `Welcome, ${data.user.name}.`;
+      }
+    })
+    .catch(() => {
+      if (welcomeMessage) {
+        welcomeMessage.textContent = ""; // Always there, so empty instead of hiding.
+      }
+    });
 });
 
 // Post-sorting dropdown.
@@ -189,9 +200,8 @@ function renderPosts(posts, container) {
     // Set inner HTML for the main post content
     postDiv.innerHTML = `
       <p class="post-text">
-        <strong>${post.username || "anon"}</strong>${
-          post.reply_to_username ? ` @ <strong>${post.reply_to_username}</strong>` : ""
-        }: ${post.content}
+        <strong>${post.username || "anon"}</strong>${post.reply_to_username ? ` @ <strong>${post.reply_to_username}</strong>` : ""
+      }: ${post.content}
       </p>
       <p class="post-timestamp">
         <small>${new Date(post.timestamp).toLocaleString()}</small>
