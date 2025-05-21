@@ -36,4 +36,3 @@ app.include_router(posts.router, prefix="/posts", tags=["Posts"])
 app.include_router(auth_routes.router, prefix="/auth", tags=["Auth"])
 app.include_router(search.router, prefix="/search", tags=["Search"])
 app.include_router(logs.router, tags=["Logs"])
-
