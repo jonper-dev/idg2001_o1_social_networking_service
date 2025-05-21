@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session, joinedload
 from app.models.models import User, Post, Hashtag, likes_table as likes, post_hashtags
+from app.schemas.schemas import PostCreate
 from sqlalchemy import or_
 import bcrypt
 import logging
@@ -116,6 +117,7 @@ def create_post(
     # Extract and attach hashtags from content
     hashtags = extract_hashtags_from_text(post_data.content)
     for tag in hashtags:
+        tag = tag.lower()
         existing = db.query(Hashtag).filter(Hashtag.name == tag).first()
         if existing:
             post.hashtags.append(existing)
@@ -204,7 +206,8 @@ def is_post_liked_by_user(db: Session, post_id: int, user_id: int):
 
 ## Reply to post
 def reply_to_post(db: Session, user_id: int, content: str, parent_id: int):
-    return create_post(db, {"content": content, "reply_to_id": parent_id})
+    post_data = PostCreate(content=content, reply_to_id=parent_id)
+    return create_post(db, post_data, user_id)
 
 ####################
 ### -- SEARCH -- ###

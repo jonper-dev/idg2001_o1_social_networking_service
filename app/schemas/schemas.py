@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 
 #################################################################
@@ -13,19 +13,19 @@ from pydantic import BaseModel, EmailStr
 ## Used for creating a new user
 class UserCreate(BaseModel):
     name: str
-    email: str
+    email: EmailStr
     password: str
 
 ## Used for updating a user (full update, PUT)
 class UserUpdate(BaseModel):
     name: str
-    email: str
+    email: EmailStr
     password: str
 
 ## Used for partial update (PATCH)
 class UserPatch(BaseModel):
     name: Optional[str] = None
-    email: Optional[str] = None
+    email: Optional[EmailStr] = None
     password: Optional[str] = None
 
 
@@ -42,13 +42,13 @@ class PostCreate(BaseModel):
 class PostUpdate(BaseModel):
     content: str
     reply_to_id: Optional[int] = None
-    hashtags: Optional[list[str]] = []
+    hashtags: Optional[List[str]] = []
 
 ## Used for a partial update (PATCH)
 class PostPatch(BaseModel):
     content: Optional[str] = None
     reply_to_id: Optional[int] = None
-    hashtags: Optional[list[str]] = []
+    hashtags: Optional[List[str]] = []
 
 ## Used for detailed post-display, including user-information.
 class PostOutput(BaseModel):
@@ -60,9 +60,11 @@ class PostOutput(BaseModel):
     likes: int
     is_liked_by_user: bool
     reply_to_username: Optional[str] = None
+    hashtags: List[str] = []
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 ## Like a post
 class PostLike(BaseModel):
@@ -74,10 +76,8 @@ class PostLike(BaseModel):
 #############
 ## Used for handling login requests.
 class LoginInput(BaseModel):
-    email: str
+    email: EmailStr
     password: str
-    
-    
     
 #############
 ### Signup ###
@@ -99,6 +99,12 @@ class UserPublic(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+#######################
+### Hashtag details ###
+#######################  
+class HashtagPublic(BaseModel):
+    name: str
 
 ##################
 ### Auth Satus ###

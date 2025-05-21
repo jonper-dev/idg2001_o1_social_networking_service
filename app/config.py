@@ -15,3 +15,5 @@ DATABASE_URL = (
     f"mysql+pymysql://{DB_CONFIG['user']}:{DB_CONFIG['password']}"
     f"@{DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['database']}"
 )
+
+LIKE_BATCH_FLUSH_INTERVAL = int(os.getenv("LIKE_BATCH_FLUSH_INTERVAL", 5))

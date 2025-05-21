@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional, Union
 from app.models.models import Post
-from app.schemas.schemas import PostOutput, UserPublic
+from app.schemas.schemas import PostOutput, UserPublic, HashtagPublic
 from app.dependencies.auth import get_optional_user_id
 from app.db import get_db
 from app import crud
@@ -10,7 +10,7 @@ from app import crud
 router = APIRouter()
 
 ## Search posts by content
-@router.get("", response_model=Union[List[PostOutput], List[UserPublic]])
+@router.get("", response_model=Union[List[PostOutput], List[UserPublic], List[HashtagPublic]])
 def search(
     query: str = Query(..., min_length=1),
     type: str = Query("posts"),  # Default to lowercase 'posts' for consistency
@@ -18,9 +18,7 @@ def search(
     user_id: Optional[int] = Depends(get_optional_user_id)
 ):
     if type.lower() == "posts":  # Normalize the type to lowercase
-        posts = db.query(Post).options(joinedload(Post.likes), joinedload(Post.author))\
-            .filter(Post.content.ilike(f"%{query}%")).all()
-
+        posts = crud.search_posts(db, query)
         return [
             PostOutput(
                 id=post.id,
@@ -29,7 +27,8 @@ def search(
                 user_id=post.user_id,
                 username=post.author.name if post.author else "Anonymous",
                 likes=len(post.likes),
-                is_liked_by_user=any(liker.id == user_id for liker in post.likes) if user_id else False
+                is_liked_by_user=any(liker.id == user_id for liker in post.likes) if user_id else False,
+                hashtags=[tag.name for tag in post.hashtags] if post.hashtags else []
             )
             for post in posts
         ]
@@ -40,7 +39,8 @@ def search(
 
     elif type.lower() == "hashtags":
         hashtags = crud.search_hashtags(db, query)
-        return [hashtag.name for hashtag in hashtags]
+        return [{"name": hashtag.name} for hashtag in hashtags]
+
 
     else:
         raise HTTPException(status_code=400, detail="Invalid search type.")
