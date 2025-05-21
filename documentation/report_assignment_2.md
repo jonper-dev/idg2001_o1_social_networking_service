@@ -23,7 +23,7 @@ Caching provided with Redis, an in-memory store used in our architecture to supp
 
 ## New features
 ### Like posts (with batcher)
-While like posts was already implemented in assignment 1, they were not fully functioning. In this second iteration like posts is fully implements with like posts batcher. To prevent uneccesary load on the database likes are sent to database every 10 likes or after 1 minute.
+While liking of posts was already implemented in assignment 1, they were not fully functioning. In this second iteration functionality is fully implements with a like posts batcher. To prevent uneccesary load on the database as the app potentially grows in popularity and posts are liked in larger numbers within a short timefram likes are now sent to the database every 10 likes or after 1 minute, instead of for every like.
 
 ### Hashtags 
 Hashtags are identified and extracted from post text and saved to database. They can be searched for in the nav-bar search feature.
@@ -43,8 +43,6 @@ Users can edit and delete posts in their profile where username, email and user'
 
 ### Search Bar
 In this iteration of Cheeper the search bar is fully functional. User is able to search for content in posts, user accounts and hashtags used in posts.
-
-
 
 ### Logger
 Logs of calls to the API end points can be accessed via endpoint get/logs and will give information on request method, path, status code and timestamp.
