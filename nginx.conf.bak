@@ -1,0 +1,55 @@
+worker_processes 1;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    ## Define an upstream group for load balancing
+    upstream backend {
+        server web-1:8000 max_fails=3 fail_timeout=30s; ## Instance 1
+        server web-2:8000 max_fails=3 fail_timeout=30s; ## Instance 2
+    }
+
+    server {
+        listen 80;
+
+        ## Handle all API routes
+        location / {
+            proxy_pass http://backend;
+
+            ## Required headers for passing cookies and preserving identity
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_pass_request_headers on;
+
+            ## Support WebSockets (though not used)
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+
+            ## CORS setup (for credentials)
+            if ($http_origin ~* "^http://127\.0\.0\.1:5500$") {
+                add_header Access-Control-Allow-Origin $http_origin always;
+                add_header Access-Control-Allow-Credentials true always;
+                add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+                add_header Access-Control-Allow-Headers "Authorization, Content-Type, Set-Cookie" always;
+            }
+
+            ## Handle preflight requests
+            if ($request_method = OPTIONS) {
+                add_header Access-Control-Max-Age 86400;
+                add_header Content-Length 0;
+                add_header Content-Type "text/plain; charset=UTF-8";
+                return 204;
+            }
+
+            ## Prevent caching (for testing/dev)
+            add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0";
+        }
+    }
+}

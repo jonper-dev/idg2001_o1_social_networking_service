@@ -36,31 +36,25 @@ def signup(data: SignupInput, db: Session = Depends(get_db)):
 ###############
 @router.post("/login")
 def login(data: LoginInput, response: Response, db: Session = Depends(get_db)):
-    try:
-        user = crud.verify_user_credentials(db, data.email, data.password)
-        if not user:
-            raise HTTPException(status_code=401, detail="Invalid credentials.")
-        
-        session_id = str(uuid.uuid4())      ## Create a new session ID.
-
-        create_session(session_id, user.id) ## Save the session.
-
-        response.set_cookie(
-            key='session_id', 
-            value=session_id, 
-            httponly=True, 
-            samesite='lax', 
-            secure=False,
-            max_age=3600,
-            )
-        
-        return {"message": "Login successful", "user_id": user.id, "name": user.name}
-
-    except Exception as e:
-        print("Error during login:", e)
-        traceback.print_exc()  # <-- This gives you the full stack trace in logs
-        raise HTTPException(status_code=500, detail="Internal server error")
+    user = crud.verify_user_credentials(db, data.email, data.password)
+    if not user:
+        ## Logging error conditionally, and returning 401 if issue with credentials.
+        print("Invalid login attempt for email:", data.email)
+        raise HTTPException(status_code=401, detail="Invalid credentials.")
     
+    session_id = str(uuid.uuid4())      ## Create a new session ID.
+    create_session(session_id, user.id) ## Save the session.
+
+    response.set_cookie(
+        key='session_id',
+        value=session_id,
+        httponly=True,
+        samesite='lax',
+        secure=False,                   ## Set True in production with HTTPS
+        max_age=3600,
+    )
+
+    return {"message": "Login successful", "user_id": user.id, "name": user.name}
 
 ################
 ### Logout  ####

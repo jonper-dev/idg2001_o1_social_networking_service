@@ -1,6 +1,6 @@
 const API_BASE_URL =
   
-  // "https://idg2001-o1-social-networking-service.onrender.com"; // RENDER:
+  // "https://idg2001-social-networking-service.onrender.com"; // RENDER:
   "http://127.0.0.1:8000"; // LOCAL:
 
 // #####################
@@ -178,13 +178,14 @@ function signup() {
 
 // Login
 function login() {
-  console.log("Login function triggered");
+  console.log("Login function triggered.");
+
   const email = document.querySelector("#login-email").value;
   const password = document.querySelector("#login-password").value;
 
-  fetch(`${API_BASE_URL}/auth/login/`, {
+  fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
-    credentials: "include",
+    credentials: "include", // Include session cookie
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   })
@@ -194,23 +195,27 @@ function login() {
       }
       return res.json();
     })
-    .then((data) => {
-      if (data.user_id) {
-        // Save session
-        localStorage.setItem("user_id", data.user_id);
-        localStorage.setItem("user_name", data.name);
-        console.log("Stored user:", localStorage.getItem("user_name"));
-
-        // Redirects to the main page (includes post-feed).
-        // Delayed to allow localStorage to store the username.
-        setTimeout(() => {
-          window.location.href = "/frontend/index.html";
-        }, 100); // 100 ms delay to enable localStorage.
-      } else {
-        const msg = document.querySelector("#login-message");
-        msg.textContent = data.detail || "Login failed.";
-        msg.className = "error";
+    .then(() => {
+      // After login, validate session to get user info securely
+      return fetch(`${API_BASE_URL}/auth/me`, {
+        method: "GET",
+        credentials: "include", // Send session_id cookie
+      });
+    })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Session validation failed.");
       }
+      return res.json();
+    })
+    .then((data) => {
+      // Store public user info locally (if needed for display)
+      localStorage.setItem("user_id", data.user.id);
+      localStorage.setItem("user_name", data.user.name);
+      console.log("Stored user:", data.user.name);
+
+      // Redirect to main page
+      window.location.href = "/frontend/index.html";
     })
     .catch((err) => {
       const msg = document.querySelector("#login-message");
@@ -224,15 +229,22 @@ function login() {
 function logout() {
   fetch(`${API_BASE_URL}/auth/logout`, {
     method: "POST",
-    credentials: "include", // Sends session_id cookie to backend.
+    credentials: "include", // Sends session_id cookie to backend
   })
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Logout failed.");
+      }
+      return res.json();
+    })
     .then((data) => {
       console.log("Logout response:", data.message);
-      // Only removing user-related data, not others (like lightmode/darkmode-setting).
+
+      // Remove only user-related data (leave dark mode etc.)
       localStorage.removeItem("user_id");
       localStorage.removeItem("user_name");
 
+      // Store message temporarily for display after reload
       sessionStorage.setItem("logoutMessage", "You have been logged out.");
       location.reload();
     })

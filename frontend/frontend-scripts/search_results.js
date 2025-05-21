@@ -1,5 +1,5 @@
 const API_BASE_URL =
-  // "https://idg2001-o1-social-networking-service.onrender.com"; // RENDER:
+  // "https://idg2001-social-networking-service.onrender.com"; // RENDER:
   "http://127.0.0.1:8000"; // LOCAL
 
 document.addEventListener("DOMContentLoaded", () => {
