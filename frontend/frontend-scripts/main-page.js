@@ -47,25 +47,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Post a Cheep (Cheep a post? Cheep something?)
 function postPost() {
-  const content = document.getElementById("post-content").value;
-  const user_id = localStorage.getItem("user_id");
-  const reply_to_id = document.getElementById("reply-to-id").value;
+  const content = document.querySelector("#post-content").value;
+  const reply_to_id = document.querySelector("#reply-to-id").value;
 
-  if (!user_id) {
-    alert("Please log in first!");
-    return;
-  }
-
-  fetch(`${API_BASE_URL}/posts/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include", // Include session cookies
-    body: JSON.stringify({
-      user_id,
-      content,
-      reply_to_id: reply_to_id || null, // Include reply ID only if set
-    }),
+  // Get the current user from session
+  fetch(`${API_BASE_URL}/auth/me`, {
+    credentials: "include",
   })
+    .then((res) => {
+      if (!res.ok) throw new Error("Not logged in.");
+      return res.json();
+    })
+    .then((userData) => {
+      const user_id = userData.user.id;
+
+      // Create the post
+      return fetch(`${API_BASE_URL}/posts/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // Include session cookies
+        body: JSON.stringify({
+          user_id,
+          content,
+          reply_to_id: reply_to_id || null, // Include reply ID only if set
+        }),
+      });
+    })
     .then((res) => res.json())
     .then((data) => {
       const msg = document.querySelector("#post-message");
@@ -77,11 +84,11 @@ function postPost() {
         msg.className = "success"; // Set to "success" for green styling
 
         // Clear the post form
-        document.getElementById("post-content").value = "";
-        document.getElementById("reply-to-id").value = "";
+        document.querySelector("#post-content").value = "";
+        document.querySelector("#reply-to-id").value = "";
 
         // Clear reply info display (if shown)
-        const replyInfo = document.getElementById("reply-info");
+        const replyInfo = document.querySelector("#reply-info");
         if (replyInfo) {
           replyInfo.textContent = "";
         }
@@ -95,7 +102,10 @@ function postPost() {
     })
     .catch((err) => {
       const msg = document.querySelector("#post-message");
-      msg.textContent = "An error occurred while creating the post.";
+      msg.textContent =
+        err.message === "Not logged in."
+          ? "You must be logged in to post."
+          : "An error occurred while creating the post.";
       msg.className = "error"; // Set to "error" for red styling
       console.error("Post error:", err);
     });
