@@ -1,5 +1,3 @@
-from typing import Optional
-from pydantic import BaseModel, EmailStr
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, Table, Boolean, DateTime, func
 from sqlalchemy.orm import relationship, declarative_base
 
@@ -14,11 +12,11 @@ followers = Table(
 )
 
 ## Many-to-many relationship for likes
-likes = Table(
+likes_table = Table(
     'likes',
     Base.metadata,
-    Column('user_id', Integer, ForeignKey('users.id')),
-    Column('post_id', Integer, ForeignKey('posts.id'))
+    Column('user_id', ForeignKey('users.id'), primary_key=True),
+    Column('post_id', ForeignKey('posts.id'), primary_key=True)
 )
 
 ## Many-to-many for hashtags
@@ -36,6 +34,8 @@ class User(Base):
     email = Column(String(100), unique=True)
     password = Column(String(100))
     posts = relationship("Post", back_populates="author")
+
+    liked_posts = relationship("Post", secondary=likes_table, back_populates="likes")
     following = relationship(
         "User",
         secondary=followers,
@@ -54,7 +54,7 @@ class Post(Base):
     reply_to_id = Column(Integer, ForeignKey('posts.id'), nullable=True)
 
     author = relationship("User", back_populates="posts")
-    likes = relationship("User", secondary=likes, backref="liked_posts")
+    likes = relationship("User", secondary=likes_table, back_populates="liked_posts")
     hashtags = relationship("Hashtag", secondary=post_hashtags, back_populates="posts")
     replies = relationship("Post", remote_side=[id], backref="parent")
 
@@ -63,74 +63,3 @@ class Hashtag(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), unique=True, index=True)
     posts = relationship("Post", secondary=post_hashtags, back_populates="hashtags")
-
-#################################################################
-### -- Pydantic models for request and response validation -- ###
-#################################################################
-## These models are used to validate the data sent to and from the API.
-
-#############
-### Users ###
-#############
-## Used for creating a new user
-class UserCreate(BaseModel):
-    name: str
-    email: str
-    password: str
-
-## Used for updating a user (full update, PUT)
-class UserUpdate(BaseModel):
-    name: str
-    email: str
-    password: str
-
-## Used for partial update (PATCH)
-class UserPatch(BaseModel):
-    name: Optional[str] = None
-    email: Optional[str] = None
-    password: Optional[str] = None
-
-
-
-#############
-### Posts ###
-#############
-## Used for creating a new post
-class PostCreate(BaseModel):
-    content: str
-    user_id: int
-    reply_to_id: Optional[int] = None
-    hashtags: Optional[list[str]] = []
-
-## Used for updating a post (full update, PUT)
-class PostUpdate(BaseModel):
-    content: str
-    reply_to_id: Optional[int] = None
-    hashtags: Optional[list[str]] = []
-
-## Used for a partial update (PATCH)
-class PostPatch(BaseModel):
-    content: Optional[str] = None
-    reply_to_id: Optional[int] = None
-    hashtags: Optional[list[str]] = []
-
-
-
-#############
-### Login ###
-#############
-## Used for handling login requests.
-class LoginInput(BaseModel):
-    email: str
-    password: str
-    
-    
-    
-#############
-### Signup ###
-#############
-## Used for handling signup requests.    
-class SignupInput(BaseModel):
-    username: str
-    email: EmailStr
-    password: str

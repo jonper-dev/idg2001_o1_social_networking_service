@@ -3,11 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cheeper</title>
+    <title>Profile</title>
     <link rel="stylesheet" href="styles/style.css" />
-    <link rel="icon" href="assets/cheeper-logo-blue-gradient.svg" />
+    <link rel="stylesheet" href="styles/profile.css" />
     <script src="frontend-scripts/shared.js" type="module" defer></script>
+    <script src="frontend-scripts/profile.js" type="module" defer></script>
   </head>
+
   <body>
     <header>
       <nav>
@@ -27,8 +29,10 @@
             <option value="accounts">Accounts</option>
             <option value="hashtags">Hashtags</option>
           </select>
-          <button type="submit" id="search-button" aria-label="Search">🔍</button>
-        </form>      
+          <button type="submit" id="search-button" aria-label="Search">
+            🔍
+          </button>
+        </form>
         <button class="menu-toggle" id="menu-toggle">&#9776;</button>
         <ul class="nav-links" id="nav-links">
           <li><button id="theme-toggle">🌙</button></li>
@@ -37,26 +41,22 @@
         </ul>
       </nav>
     </header>
-    <main>
-      <!-- User Login -->
-      <div id="login">
-        <h2>Log In</h2>
-        <input type="email" id="login-email" placeholder="Email" />
-        <input type="password" id="login-password" placeholder="Password" />
-        <button id="login-button">Login</button>
-        <p id="login-message"></p>
-      </div>
 
-      <!-- User Signup -->
-      <div id="signup">
-        <h2>Sign Up</h2>
-        <input type="text" id="username" placeholder="Username" />
-        <input type="email" id="email" placeholder="Email" />
-        <input type="password" id="password" placeholder="Password" />
-        <button id="signup-button">Sign Up</button>
-        <p id="signup-message" class="success"></p>
+    <div class="user-profile">
+      <div class="user-profile__info">
+        <img class="user-profile__info__user-image" />
+        <h2 class="user-profile__info__username"></h2>
+        <h3 class="user-profile__info__email"></h3>
       </div>
-    </main>
-    <footer></footer>
+      <div class="user-profile__my-posts">
+        <h2 class="user-profile__my-posts__header">My Posts</h2>
+        <div class="user-profile__my-posts__list"></div>
+      </div>
+    </div>
+    <footer>
+      <button id="auth-button">Log Out</button>
+      <p id="auth-message" class="auth-message"></p>
+      <p>&copy; 2025 Cheeper. All rights reserved.</p>
+    </footer>
   </body>
 </html>

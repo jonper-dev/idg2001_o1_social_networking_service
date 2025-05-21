@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles/style.css" />
     <link rel="icon" href="assets/cheeper-logo-blue-gradient.svg" />
     <script src="frontend-scripts/shared.js" type="module" defer></script>
+    <script src="frontend-scripts/main-page.js" type="module" defer></script>
   </head>
   <body>
     <header>
@@ -27,8 +28,10 @@
             <option value="accounts">Accounts</option>
             <option value="hashtags">Hashtags</option>
           </select>
-          <button type="submit" id="search-button" aria-label="Search">🔍</button>
-        </form>      
+          <button type="submit" id="search-button" aria-label="Search">
+            🔍
+          </button>
+        </form>
         <button class="menu-toggle" id="menu-toggle">&#9776;</button>
         <ul class="nav-links" id="nav-links">
           <li><button id="theme-toggle">🌙</button></li>
@@ -38,25 +41,33 @@
       </nav>
     </header>
     <main>
-      <!-- User Login -->
-      <div id="login">
-        <h2>Log In</h2>
-        <input type="email" id="login-email" placeholder="Email" />
-        <input type="password" id="login-password" placeholder="Password" />
-        <button id="login-button">Login</button>
-        <p id="login-message"></p>
+      <section id="welcome-banner">
+        <p id="welcome-message"></p>
+      </section>
+      <!-- Post -->
+      <div id="post-box">
+        <h2>Post a Cheep</h2>
+        <textarea id="post-content" placeholder="What's happening?"></textarea>
+        <button id="post-button">Post</button>
+        <p id="post-message" class="error"></p>
       </div>
 
-      <!-- User Signup -->
-      <div id="signup">
-        <h2>Sign Up</h2>
-        <input type="text" id="username" placeholder="Username" />
-        <input type="email" id="email" placeholder="Email" />
-        <input type="password" id="password" placeholder="Password" />
-        <button id="signup-button">Sign Up</button>
-        <p id="signup-message" class="success"></p>
+      <!-- Post Feed -->
+      <div id="posts">
+        <h2>Latest Posts</h2>
+        <label for="sort-select">Sort by:</label>
+        <select id="sort-select">
+          <option value="newest" selected>Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="most-liked">Most Liked</option>
+        </select>
+        <div id="post-list"></div>
       </div>
     </main>
-    <footer></footer>
+    <footer>
+      <button id="auth-button">Log Out</button>
+      <p id="auth-message" class="auth-message"></p>
+      <p>&copy; 2025 Cheeper. All rights reserved.</p>
+    </footer>
   </body>
 </html>
