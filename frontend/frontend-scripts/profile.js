@@ -1,6 +1,6 @@
 const API_BASE_URL =
-  // "https://idg2001-o1-social-networking-service.onrender.com";  // Render
-  "http://127.0.0.1:8080"; // Local dev
+  // "https://idg2001-social-networking-service.onrender.com";  // Render
+  "http://127.0.0.1:8000"; // Local dev
 
 ////////////////////////////
 // Display Profile info ///

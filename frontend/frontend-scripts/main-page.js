@@ -1,8 +1,8 @@
 import { getCachedPosts, cachePosts } from "./shared.js";
 
 const API_BASE_URL =
-  // "https://idg2001-o1-social-networking-service.onrender.com"; // RENDER:
-  "http://127.0.0.1:8080"; // LOCAL:
+  // "https://idg2001-social-networking-service.onrender.com"; // RENDER:
+  "http://127.0.0.1:8000"; // LOCAL:
 
 // Welcome-message
 document.addEventListener("DOMContentLoaded", () => {
