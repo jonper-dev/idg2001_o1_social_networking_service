@@ -18,15 +18,12 @@ To balance the load in the backend, our service uses NGINX to distribute load ac
 
 ![NGINX load balancer in terminal](./images/Exam/nginx_balancer.jpg)
 
-#### Running Docker with NGINX
-1. To run development with NGINX balancer run "docker-compose up --scale web=2 --build" in terminal instead of "docker compose up --build"
-
 ### Caching
 Caching provided with Redis, an in-memory store used in our architecture to support fast data access and caching. Redis runs as a seperate container with Docker (redis:alpine). Backend services (web-1 and web-2) connect to Redis by referencing the Redis service hostname (redis) defined in Docker Compose. Response time is improved as Redis caches frequently accessed data, which also benefits the backend load.
 
 ## New features
-### Like posts batcher
-While like posts was already implemented in assignment 1, they were not fully functioning. In this second iteration like posts is fully implements with like posts batcher. To prevent uneccesary load on the database likes are sent to database every 1000 likes or after 1 minute ??????
+### Like posts (with batcher)
+While like posts was already implemented in assignment 1, they were not fully functioning. In this second iteration like posts is fully implements with like posts batcher. To prevent uneccesary load on the database likes are sent to database every 10 likes or after 1 minute.
 
 ### Hashtags 
 Hashtags are identified and extracted from post text and saved to database. They can be searched for in the nav-bar search feature.
