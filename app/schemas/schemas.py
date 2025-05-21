@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 
@@ -63,7 +63,10 @@ class PostOutput(BaseModel):
     hashtags: List[str] = []
 
     model_config = {
-        "from_attributes": True
+        "from_attributes": True,
+         "json_encoders": {
+            datetime: lambda dt: dt.isoformat() if dt.tzinfo else dt.replace(tzinfo=timezone.utc).isoformat()
+        }
     }
 
 ## Like a post
